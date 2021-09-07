@@ -1,5 +1,6 @@
 from random import *
 import time
+import copy
 seed(time.time())
 MINBET=10
 NDECKS=4
@@ -99,7 +100,7 @@ class Table():
         self.cDealer=[0]*2
         self.cPlayer=[]
         for p in range(NPLAYERS):
-            self.cPlayer.append([0]*2)
+            self.cPlayer.append([[0]*2])
     def shuffle(self):
         self.decks=getShuffled()
     def dealerDecision(self):
@@ -132,66 +133,79 @@ class Table():
         print("dealer: %d"%(valHand(self.cDealer)))
         return valHand(self.cDealer)
     def playerDecision(self):
+        handvals=[]
         split=False
         bust=False
-        print("player0:%s"%(strHand(self.cPlayer[0])))
+        print("player0:%s"%(strHand(self.cPlayer[0][0])))
         choice='?'
         while(choice!='n'):
-#            if(split==True):
-#                for h in 
-            print("hit? (y/n/d/s/q)")
-            choice=input()
-            if(choice=='y'):
-                self.cPlayer[0].append(self.decks.pop())
-                print("player0:%s"%(strHand(self.cPlayer[0])))
-                print("value:%d"%(valHand(self.cPlayer[0])))
-            elif(choice=='s'):
-                print("split")
-                if(split==True):
-                    pass    #do a buncha crap i have to type out eventually maybe
-                split=True
-                self.splitHands=[[self.cPlayer[0][0]],[self.cPlayer[0][1]]]
-                for h in self.splitHands:
+            for h in self.cPlayer[0]:
+    #            if(split==True):
+    #                for h in 
+                print("hit? (y/n/d/s/q)")
+                choice=input()
+                if(choice=='y'):
                     h.append(self.decks.pop())
                     print("player0:%s"%(strHand(h)))
+                    print("value:%d"%(valHand(h)))
+                elif(choice=='s'):
+                    print("split")
+                    if(split==True):
+                        pass    #do a buncha crap i have to type out eventually maybe
+                    split=True
+                    self.cPlayer[0].append([h[1]])
+                    self.cPlayer[0][0]=[copy.deepcopy(h[0])]
+                    for h2 in self.cPlayer[0]:
+                        h2.append(self.decks.pop())
+                        print("player0:%s"%(strHand(h2)))
 
-            elif(choice=='q'):
-                return'q'
-                
-            bust=checkBust(self.cPlayer[0])
-            if(bust):
-                print("bust")
-                print("player0:%s"%(strHand(self.cPlayer[0])))
-                return 0
-        print("player0:%s"%(strHand(self.cPlayer[0])))
-        handval=valHand(self.cPlayer[0])
-        if(handval==-1):
-            print("blackjack")
-            return 22
-        return handval
+                elif(choice=='q'):
+                    return'q'
+                    
+                bust=checkBust(h)
+                if(bust):
+                    print("bust")
+                    print("player0:%s"%(strHand(h)))
+                    return 0
+            #print("player0:%s"%(strHand(self.cPlayer[0])))
+            print("player0:%s"%(strHand(h)))
+            recentVal=valHand(h)
+            if(recentVal==-1):
+                print("blackjack")
+                recentVal=22
+            handvals.append(valHand(h))
+        return handvals
     def deal(self):
         assert(len(self.decks)>1+NPLAYERS)
         self.nGames+=1
         for j in range(2):
             for i in range(NPLAYERS):
-                self.cPlayer[i][j]=self.decks.pop()
+                self.cPlayer[i][0][j]=self.decks.pop()
             self.cDealer[j]=self.decks.pop()
     def valLook(self):
         print("game:%d"%(self.nGames))
         print("dealer: %d"%(valHand(self.cDealer)))
         for i in range(NPLAYERS):
-            print("player%d:%d"%(i,valHand(self.cPlayer[i])))
+            for hand in self.cPlayer[i]:
+                print("player%d:%d"%(i,valHand(hand)))
+                #print("player%d:%d"%(i,valHand(self.cPlayer[i])))
     def omniLook(self):
         print("game:%d"%(self.nGames))
         #print("dealer: %s"%(strCard(self.cDealer)))
         print("dealer: %s"%(strHand(self.cDealer)))
-        for i in range(NPLAYERS):
-            print("player%d:%s"%(i,strHand(self.cPlayer[i])))
-            #print("player%d: %s"%(i,strCard(self.cPlayer[i])))
+        playerHand=self.cPlayer[0][0]
+        print(playerHand)
+        print(self.cDealer)
+        print("player0:%s"%(0,strHand(playerHand)))
+        #print("player0:%s"%(0,strHand(playerHand[0])))
+        #for i in range(1,NPLAYERS):
+        #    print("player%d:%s"%(i,strHand(self.cPlayer[i])))
+        #    #print("player%d: %s"%(i,strCard(self.cPlayer[i])))
     def look(self):
+        playerHand=self.cPlayer[0]
         print("game:%d"%(self.nGames))
         print("dealer: [?? %s]"%(strCard(self.cDealer[1])))
-        print("player0:%s"%(strHand(self.cPlayer[0])))
+        print("player0:%s"%(strHand(playerHand[0])))
         for i in range(1,NPLAYERS):
             print("player%d:[?? ??]"%(i))
             #print("player%d: %s"%(i,strHand(self.cPlayer[i])))
@@ -207,9 +221,11 @@ for i in range(52*NPLAYERS):
     print()
     t.deal()
     t.look()
-    t.omniLook()
+    #t.omniLook()
     t.valLook()
     pval=t.playerDecision()
+    print(pval)
+    #pval=t.playerDecision()[0]
     if(pval=='q'):
         break
     dval=t.dealerDecision()
