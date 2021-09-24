@@ -95,11 +95,11 @@ def checkBust(h):
         return True
     return False
 
-d=getShuffled()
-print(d)
+#d=getShuffled()
+#print(d)
 
-for c in d:
-    print(strCard(c))
+#for c in d:
+#    print(strCard(c))
 
 class Table():
     nGames=0
@@ -201,17 +201,13 @@ class Table():
                 print("player%d:%d"%(i,valHand(cards)))
                 #print("player%d:%d"%(i,valHand(self.cPlayer[i])))
     def omniLook(self):
+        playerCards=self.cPlayer[0][0].cards
+        dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
-        #print("dealer: %s"%(strCard(self.cDealer)))
-        print("dealer: %s"%(strHand(self.cDealer)))
-        playerHand=self.cPlayer[0][0]
-        print(playerHand)
-        print(self.cDealer)
-        print("player0:%s"%(0,strHand(playerHand)))
-        #print("player0:%s"%(0,strHand(playerHand[0])))
-        #for i in range(1,NPLAYERS):
-        #    print("player%d:%s"%(i,strHand(self.cPlayer[i])))
-        #    #print("player%d: %s"%(i,strCard(self.cPlayer[i])))
+        print("dealer: %s"%(strHand(dealerCards)))
+        print("player0:%s"%(strHand(playerCards)))
+        for i in range(1,NPLAYERS):
+            print("player%d:%s"%(i,strHand(self.cPlayer[i][0].cards)))
     def look(self):
         playerCards=self.cPlayer[0][0].cards
         dealerCards=self.cDealer.cards
@@ -223,12 +219,10 @@ class Table():
             #print("player%d: %s"%(i,strHand(self.cPlayer[i])))
 
 t=Table()
-#print(t.cDealer)
-#print(t.cPlayer[0])
 t.shuffle()
 bankroll=STARTINGBANKROLL
 betsize=MINBET
-for i in range(52*NPLAYERS):
+while True:
     t.removeCards()
     print()
     t.deal()
