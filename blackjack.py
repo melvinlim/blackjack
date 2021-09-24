@@ -144,7 +144,6 @@ class Table():
         return valHand(dealerCards)
     def playerDecisions(self,player):
         split=False
-        bust=False
         choice='?'
         for hand in player:
             h=hand.cards
@@ -176,9 +175,10 @@ class Table():
                     
                 bust=checkBust(h)
                 if(bust):
-                    print("bust")
+                    print("*bust")
                     print("player0:%s"%(strHand(h)))
                     hand.handval='b'
+                    break
             print("player0:%s"%(strHand(h)))
             recentVal=valHand(h)
             if(recentVal==-1):
