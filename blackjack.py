@@ -173,7 +173,7 @@ class Table():
                 if(bust):
                     print("*bust")
                     print("player0:%s"%(strHand(h)))
-                    hand.handval='b'
+                    hand.handval=0
                     break
             print("player0:%s"%(strHand(h)))
             recentVal=valHand(h)
@@ -238,21 +238,22 @@ for i in range(52*NPLAYERS):
     result=t.playerDecision()
     if(result=='q'):      #quit
         break
-    pval=t.cPlayer[0][0].handval
-    if(pval=='b'):    #bust
-        pval=0
     dval=t.dealerDecision()
-    print('%d %d'%(pval,dval))
-    if(pval==0):
-        print('*bust')
-        print('*player loss')
-        bankroll-=betsize
-    elif(pval==dval):
-        print('*tie')
-    elif(pval>dval):
-        print('*player win')
-        bankroll+=betsize
-    else:
-        print('*player loss')
-        bankroll-=betsize
-    print('*bankroll:%d'%bankroll)
+    i=1
+    for hand in t.cPlayer[0]:
+        pval=hand.handval
+        print('hand %d: %d %d'%(i,pval,dval))
+        i+=1
+        if(pval==0):
+            print('*bust')
+            print('*player loss')
+            bankroll-=betsize
+        elif(pval==dval):
+            print('*tie')
+        elif(pval>dval):
+            print('*player win')
+            bankroll+=betsize
+        else:
+            print('*player loss')
+            bankroll-=betsize
+        print('*bankroll:%d'%bankroll)
