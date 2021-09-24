@@ -144,9 +144,10 @@ class Table():
         return valHand(dealerCards)
     def playerDecisions(self,player):
         split=False
-        choice='?'
         for hand in player:
+            print('player len:'+str(len(player)))
             h=hand.cards
+            choice='?'
             while(choice!='n'):
                 print("player0:%s"%(strHand(h)))
                 print("value:%d"%(valHand(h)))
@@ -158,17 +159,12 @@ class Table():
 #                    print("value:%d"%(valHand(h)))
                 elif(choice=='s'):
                     print("split")
-                    self.cPlayer[0].append([h[1]])
-                    #self.cPlayer[0][0]=[copy.deepcopy(h[0])]
-                    h=[copy.deepcopy(h[0])]
-                    h.append(self.decks.pop())
-                    h2=self.cPlayer[0][-1]
-                    h2.append(self.decks.pop())
-                    print("player0:%s"%(strHand(h)))
-                    print("player0:%s"%(strHand(h2)))
-#                        for h2 in self.cPlayer[0]:
-#                            h2.append(self.decks.pop())
-#                            print("player0:%s"%(strHand(h2)))
+                    newHand1=Hand([copy.deepcopy(h[0])],0)
+                    newHand2=Hand([copy.deepcopy(h[1])],0)
+                    player.remove(hand)
+                    player.append(newHand1)
+                    player.append(newHand2)
+                    return self.playerDecisions(player)
 
                 elif(choice=='q'):
                     return'q'
