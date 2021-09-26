@@ -154,8 +154,6 @@ class Table():
                 return 0
         time.sleep(DEALERDELAY)
         print("*dealer stands")
-        print("dealer: %s"%(strHand(dealerCards)))
-#        print("dealer: %d"%(valHand(dealerCards)))
         return valHand(dealerCards)
     def playerDecisions(self,player):
         split=False
