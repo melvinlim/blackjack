@@ -1,3 +1,4 @@
 # blackjack
 text based blackjack game written in python<br>
-download [python](https://www.python.org/) and run by typing "python blackjack.py" from the command line<br>
+save the [script](https://raw.githubusercontent.com/melvinlim/blackjack/master/blackjack.py) somewhere<br>
+and download [python](https://www.python.org/) and run the script by typing "python blackjack.py" at the command line<br>
