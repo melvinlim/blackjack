@@ -138,14 +138,14 @@ class Table():
             print("*dealer hits")
             print("dealer: %s"%(strHand(dealerCards)))
 #            print("dealer: %d"%(valHand(dealerCards)))
+            bust=checkBust(dealerCards)
+            if(bust):
+                print("*dealer busts")
+                return 0
         if(hasAce(dealerCards)):
             dval=valHand(dealerCards)
             while(dval<17):
                 dealerCards.append(self.decks.pop())
-        bust=checkBust(dealerCards)
-        if(bust):
-            print("bust")
-            return 0
         time.sleep(DEALERDELAY)
         print("*dealer stands")
         print("dealer: %s"%(strHand(dealerCards)))
