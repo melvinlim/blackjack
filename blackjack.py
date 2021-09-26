@@ -8,6 +8,7 @@ class Hand:
         self.cards=cards
         self.handval=handval
 
+soft17rule=True         #dealer hits on soft 17 (ace and 8)
 seed(time.time())
 MINBET=10
 NDECKS=4
@@ -46,6 +47,20 @@ def valHand(h):
     elif(val==21 and nCards==2):
         return 22   #blackjack beats 21.  should also win immediately unless dealer also has blackjack.
     return val
+def hasAce(h):
+    for c in h:
+        if(strFace(c)=='A'):
+            return True
+    return False
+def isSoft17(hand):
+    hval=valHand(hand)
+    if(hval!=17):
+        return False
+    if(not hasAce(hand)):
+        return False
+    if(len(hand)>2):
+        return False
+    return True
 def strFace(c):
     s=int(c%13)
     if(s<8):
@@ -71,11 +86,6 @@ def strSuit(c):
         return 'h'
     elif(s==3):
         return 's'
-def hasAce(h):
-    for c in h:
-        if(strFace(c)=='A'):
-            return True
-    return False
 def strCard(c):
     return "%s%s"%(strFace(c),strSuit(c))
 def strHand(h):
@@ -131,7 +141,7 @@ class Table():
             print("dealer: %s"%(strHand(dealerCards)))
             print("blackjack")
             return 22
-        while(dval<17):
+        while((dval<17) or (soft17rule and isSoft17(dealerCards))):
             time.sleep(DEALERDELAY)
             dealerCards.append(self.decks.pop())
             dval=valHand(dealerCards)
@@ -142,10 +152,6 @@ class Table():
             if(bust):
                 print("*dealer busts")
                 return 0
-        if(hasAce(dealerCards)):
-            dval=valHand(dealerCards)
-            while(dval<17):
-                dealerCards.append(self.decks.pop())
         time.sleep(DEALERDELAY)
         print("*dealer stands")
         print("dealer: %s"%(strHand(dealerCards)))
