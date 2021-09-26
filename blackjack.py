@@ -119,7 +119,7 @@ class Table():
         dval=valHand(dealerCards)
         self.cDealer.handval=dval
         print("dealer: %s"%(strHand(dealerCards)))
-        print("dealer: %d"%(valHand(dealerCards)))
+#        print("dealer: %d"%(valHand(dealerCards)))
         if(dval==22):
             print("dealer: %s"%(strHand(dealerCards)))
             print("blackjack")
@@ -130,7 +130,7 @@ class Table():
             dval=valHand(dealerCards)
             print("*dealer hits")
             print("dealer: %s"%(strHand(dealerCards)))
-            print("dealer: %d"%(valHand(dealerCards)))
+#            print("dealer: %d"%(valHand(dealerCards)))
         if(hasAce(dealerCards)):
             dval=valHand(dealerCards)
             while(dval<17):
@@ -142,12 +142,11 @@ class Table():
         time.sleep(DEALERDELAY)
         print("*dealer stands")
         print("dealer: %s"%(strHand(dealerCards)))
-        print("dealer: %d"%(valHand(dealerCards)))
+#        print("dealer: %d"%(valHand(dealerCards)))
         return valHand(dealerCards)
     def playerDecisions(self,player):
         split=False
         for hand in player:
-            print('player len:'+str(len(player)))
             h=hand.cards
             choice='?'
             while(choice!='n'):
@@ -200,7 +199,6 @@ class Table():
             for hand in self.cPlayer[i]:
                 cards=hand.cards
                 print("player%d:%d"%(i,valHand(cards)))
-                #print("player%d:%d"%(i,valHand(self.cPlayer[i])))
     def omniLook(self):
         playerCards=self.cPlayer[0][0].cards
         dealerCards=self.cDealer.cards
@@ -214,10 +212,9 @@ class Table():
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: [?? %s]"%(strCard(dealerCards[1])))
-        print("player0:%s"%(strHand(playerCards)))
-        for i in range(1,NPLAYERS):
-            print("player%d:[?? ??]"%(i))
-            #print("player%d: %s"%(i,strHand(self.cPlayer[i])))
+#        print("player0:%s"%(strHand(playerCards)))
+#        for i in range(1,NPLAYERS):
+#            print("player%d:[?? ??]"%(i))
 
 #testFunction()
 t=Table()
@@ -230,7 +227,7 @@ while True:
     t.deal()
     t.look()
     #t.omniLook()
-    t.valLook()
+    #t.valLook()
     result=t.playerDecision()
     if(result=='q'):      #quit
         break
