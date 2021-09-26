@@ -8,7 +8,7 @@ class Hand:
         self.cards=cards
         self.handval=handval
 
-soft17rule=True         #dealer hits on soft 17 (ace and 8)
+soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
 MINBET=10
 NDECKS=4
