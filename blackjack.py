@@ -32,11 +32,18 @@ def valHand(h):
         if(cVal==1):
             aces+=1
     if(val>=21):
-        return val
+        if(val>21):
+            return 0    #busted hand is worth 0.
+        elif(val==21 and nCards==2):
+            return 22   #blackjack beats 21.  should also win immediately unless dealer also has blackjack.
+        else:
+            return 21
     while((aces>0)and(val+10<=21)):
         aces-=1
         val+=10
-    if(val==21 and nCards==2):
+    if(val>21):
+        return 0    #busted hand is worth 0.
+    elif(val==21 and nCards==2):
         return 22   #blackjack beats 21.  should also win immediately unless dealer also has blackjack.
     return val
 def strFace(c):
@@ -93,7 +100,7 @@ def getShuffled():
     return sample(range(52*NDECKS),52*NDECKS)
 
 def checkBust(h):
-    if(valHand(h)>21):
+    if(valHand(h)==0):
         return True
     return False
 
@@ -173,14 +180,12 @@ class Table():
                 bust=checkBust(h)
                 if(bust):
                     print("*bust")
-                    print("player0:%s"%(strHand(h)))
-                    hand.handval=0
                     break
             print("player0:%s"%(strHand(h)))
             recentVal=valHand(h)
             if(recentVal==22):
-                print("blackjack")
-            hand.handval=valHand(h)
+                print("*blackjack")
+            hand.handval=recentVal
     def playerDecision(self):
         return self.playerDecisions(self.cPlayer[0])
     def deal(self):
