@@ -37,7 +37,7 @@ def valHand(h):
         aces-=1
         val+=10
     if(val==21 and nCards==2):
-        return -1   #-1 means blackjack
+        return 22   #blackjack beats 21.  should also win immediately unless dealer also has blackjack.
     return val
 def strFace(c):
     s=int(c%13)
@@ -79,13 +79,15 @@ def strHand(h):
     ret+="]"
     return ret
     #return "[%s %s]"%(strCard(h[0]),strCard(h[1]))
-for i in range(52*NDECKS):
-    x=i
-    #print(x)
-    #print(strSuit(x))
-    #print(strFace(x))
-    #print("%s%s"%(strFace(x),strSuit(x)))
-    print(strCard(x))
+
+def testFunction():
+    for i in range(52*NDECKS):
+        x=i
+        #print(x)
+        #print(strSuit(x))
+        #print(strFace(x))
+        #print("%s%s"%(strFace(x),strSuit(x)))
+        print(strCard(x))
 
 def getShuffled():
     return sample(range(52*NDECKS),52*NDECKS)
@@ -118,7 +120,7 @@ class Table():
         self.cDealer.handval=dval
         print("dealer: %s"%(strHand(dealerCards)))
         print("dealer: %d"%(valHand(dealerCards)))
-        if(dval==-1):
+        if(dval==22):
             print("dealer: %s"%(strHand(dealerCards)))
             print("blackjack")
             return 22
@@ -177,9 +179,8 @@ class Table():
                     break
             print("player0:%s"%(strHand(h)))
             recentVal=valHand(h)
-            if(recentVal==-1):
+            if(recentVal==22):
                 print("blackjack")
-                recentVal=22
             hand.handval=valHand(h)
     def playerDecision(self):
         return self.playerDecisions(self.cPlayer[0])
@@ -218,6 +219,7 @@ class Table():
             print("player%d:[?? ??]"%(i))
             #print("player%d: %s"%(i,strHand(self.cPlayer[i])))
 
+#testFunction()
 t=Table()
 t.shuffle()
 bankroll=STARTINGBANKROLL
