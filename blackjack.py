@@ -2,10 +2,19 @@ from random import *
 import time
 import copy
 
+soft17rule=True         #dealer hits on soft 17 (ace and 6)
+seed(time.time())
+MINBET=10
+NDECKS=4
+#NPLAYERS=2
+NPLAYERS=1
+STARTINGBANKROLL=100*MINBET
+DEALERDELAY=1
+
 class Hand(object):
-    __slots__=['cards','handval']
     def __init__(self):
         self.cards=[]
+        self.wager=MINBET
         self.handval=0
 
 class Player(object):
@@ -64,14 +73,6 @@ class Human(Player):
                 print("*blackjack")
             hand.handval=recentVal
 
-soft17rule=True         #dealer hits on soft 17 (ace and 6)
-seed(time.time())
-MINBET=10
-NDECKS=4
-NPLAYERS=2
-#NPLAYERS=1
-STARTINGBANKROLL=100*MINBET
-DEALERDELAY=1
 def valCard(c):
     v=int(c%13)
     if(v<8):
@@ -262,20 +263,21 @@ while True:
         break
     dval=t.dealerDecision()
     i=1
-    for hand in t.players[0].hands:
-        pval=hand.handval
-        print('hand %d: %d %d'%(i,pval,dval))
-        i+=1
-        if(pval==0):
-            print('*bust')
-            print('*player loss')
-            bankroll-=betsize
-        elif(pval==dval):
-            print('*tie')
-        elif(pval>dval):
-            print('*player win')
-            bankroll+=betsize
-        else:
-            print('*player loss')
-            bankroll-=betsize
-        print('*bankroll:%d'%bankroll)
+    for player in t.players:
+        for hand in player.hands:
+            pval=hand.handval
+            print('hand %d: %d %d'%(i,pval,dval))
+            i+=1
+            if(pval==0):
+                print('*bust')
+                print('*player loss')
+                bankroll-=hand.wager
+            elif(pval==dval):
+                print('*tie')
+            elif(pval>dval):
+                print('*player win')
+                bankroll+=hand.wager
+            else:
+                print('*player loss')
+                bankroll-=hand.wager
+            print('*bankroll:%d'%bankroll)
