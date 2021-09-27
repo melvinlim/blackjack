@@ -92,6 +92,10 @@ def strSuit(c):
         return 's'
 def strCard(c):
     return "%s%s"%(strFace(c),strSuit(c))
+def sameFace(h):
+    if strFace(h[0])==strFace(h[1]):
+        return True
+    return False
 def strHand(h):
     ret="["
     for c in h:
@@ -182,20 +186,25 @@ class Table():
                         print("*bust")
                         break
                 elif(choice=='s'):
-                    print("split")
-                    newHand1=Hand()
-                    newHand2=Hand()
-                    newHand1.cards=[copy.deepcopy(h[0])]
-                    newHand2.cards=[copy.deepcopy(h[1])]
-                    newHand1.handval=0
-                    newHand2.handval=0
-                    player.remove(hand)
-                    player.append(newHand1)
-                    player.append(newHand2)
-                    return self.playerDecisions(player)
+                    if(sameFace(h) and (len(h)==2)):
+                        print("split")
+                        newHand1=Hand()
+                        newHand2=Hand()
+                        newHand1.cards=[copy.deepcopy(h[0])]
+                        newHand2.cards=[copy.deepcopy(h[1])]
+                        newHand1.handval=0
+                        newHand2.handval=0
+                        player.remove(hand)
+                        player.append(newHand1)
+                        player.append(newHand2)
+                        return self.playerDecisions(player)
+                    else:
+                        print('can only split exactly two cards with the same face')
 
                 elif(choice=='q'):
                     return'q'
+                elif(choice!='n'):
+                    print('invalid command')
             print("player0:%s"%(strHand(h)))
             recentVal=valHand(h)
             if(recentVal==22):
