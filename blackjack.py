@@ -2,18 +2,22 @@ from random import *
 import time
 import copy
 
-class Hand:
+class Hand(object):
     __slots__=['cards','handval']
-    def __init__(self,cards,handval):
-        self.cards=cards
-        self.handval=handval
+    def __init__(self):
+        self.cards=[]
+        self.handval=0
+
+class Player(object):
+    def __init__(self):
+        self.hand=Hand()
 
 soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
 MINBET=10
 NDECKS=4
 NPLAYERS=2
-NPLAYERS=1
+#NPLAYERS=1
 STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
 def valCard(c):
@@ -124,10 +128,10 @@ class Table():
     nGames=0
     decks=range(52*NDECKS)
     def removeCards(self):
-        self.cDealer=Hand([0]*2,0)
+        self.cDealer=Hand()
         self.cPlayer=[]
         for p in range(NPLAYERS):
-            self.cPlayer.append([Hand([0]*2,0)])
+            self.cPlayer.append([Hand()])
     def shuffle(self):
         self.decks=getShuffled()
     def dealerDecision(self):
@@ -198,8 +202,8 @@ class Table():
         self.nGames+=1
         for j in range(2):
             for i in range(NPLAYERS):
-                self.cPlayer[i][0].cards[j]=self.decks.pop()
-            dealerCards[j]=self.decks.pop()
+                self.cPlayer[i][0].cards.append(self.decks.pop())
+            dealerCards.append(self.decks.pop())
     def valLook(self):
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
