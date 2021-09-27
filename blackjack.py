@@ -16,6 +16,7 @@ class Hand(object):
         self.cards=[]
         self.wager=MINBET
         self.handval=0
+        self.hasDoubled=False
 
 class Player(object):
     def __init__(self):
@@ -34,6 +35,8 @@ class Human(Player):
                 if(len(h)==1):
                     h.append(decks.pop())
                     continue
+                if(hand.hasDoubled):
+                    break
                     
                 print("player0:%s"%(strHand(h)))
                 print("value:%d"%(valHand(h)))
@@ -52,6 +55,7 @@ class Human(Player):
                     newWager=hand.wager*2
                     print("wager: %d -> %d"%(hand.wager,newWager))
                     hand.wager=newWager
+                    hand.hasDoubled=True
                     h.append(decks.pop())
 #                    print("player0:%s"%(strHand(h)))
 #                    print("value:%d"%(valHand(h)))
