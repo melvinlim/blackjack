@@ -129,9 +129,9 @@ class Table():
         self.removeCards()
     def removeCards(self):
         self.cDealer=Hand()
-        self.cPlayer=[]
+        self.players=[]
         for p in range(NPLAYERS):
-            self.cPlayer.append([Hand()])
+            self.players.append([Hand()])
     def shuffle(self):
         self.decks=getShuffledDeck()
     def dealerDecision(self):
@@ -207,32 +207,32 @@ class Table():
                 print("*blackjack")
             hand.handval=recentVal
     def playerDecision(self):
-        return self.playerDecisions(self.cPlayer[0])
+        return self.playerDecisions(self.players[0])
     def deal(self):
         dealerCards=self.cDealer.cards
         self.nGames+=1
         for j in range(2):
             for i in range(NPLAYERS):
-                self.cPlayer[i][0].cards.append(self.decks.pop())
+                self.players[i][0].cards.append(self.decks.pop())
             dealerCards.append(self.decks.pop())
     def valLook(self):
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: %d"%(valHand(dealerCards)))
         for i in range(NPLAYERS):
-            for hand in self.cPlayer[i]:
+            for hand in self.players[i]:
                 cards=hand.cards
                 print("player%d:%d"%(i,valHand(cards)))
     def omniLook(self):
-        playerCards=self.cPlayer[0][0].cards
+        playerCards=self.players[0][0].cards
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: %s"%(strHand(dealerCards)))
         print("player0:%s"%(strHand(playerCards)))
         for i in range(1,NPLAYERS):
-            print("player%d:%s"%(i,strHand(self.cPlayer[i][0].cards)))
+            print("player%d:%s"%(i,strHand(self.players[i][0].cards)))
     def look(self):
-        playerCards=self.cPlayer[0][0].cards
+        playerCards=self.players[0][0].cards
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: [?? %s]"%(strCard(dealerCards[1])))
@@ -255,7 +255,7 @@ while True:
         break
     dval=t.dealerDecision()
     i=1
-    for hand in t.cPlayer[0]:
+    for hand in t.players[0]:
         pval=hand.handval
         print('hand %d: %d %d'%(i,pval,dval))
         i+=1
