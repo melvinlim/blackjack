@@ -175,8 +175,12 @@ class Table():
 #                    print("value:%d"%(valHand(h)))
                 elif(choice=='s'):
                     print("split")
-                    newHand1=Hand([copy.deepcopy(h[0])],0)
-                    newHand2=Hand([copy.deepcopy(h[1])],0)
+                    newHand1=Hand()
+                    newHand2=Hand()
+                    newHand1.cards=[copy.deepcopy(h[0])]
+                    newHand2.cards=[copy.deepcopy(h[1])]
+                    newHand1.handval=0
+                    newHand2.handval=0
                     player.remove(hand)
                     player.append(newHand1)
                     player.append(newHand2)
