@@ -47,6 +47,18 @@ class Human(Player):
                     if(bust):
                         print("*bust")
                         break
+                elif(choice=='d'):
+                    print("doubling down")
+                    newWager=hand.wager*2
+                    print("wager: %d -> %d"%(hand.wager,newWager))
+                    hand.wager=newWager
+                    h.append(decks.pop())
+#                    print("player0:%s"%(strHand(h)))
+#                    print("value:%d"%(valHand(h)))
+                    bust=checkBust(h)
+                    if(bust):
+                        print("*bust")
+                    break
                 elif(choice=='s'):
                     if(sameFace(h) and (len(h)==2)):
                         print("split")
@@ -59,7 +71,7 @@ class Human(Player):
                         playerHands.remove(hand)
                         playerHands.append(newHand1)
                         playerHands.append(newHand2)
-                        return self.decide()
+                        return self.decide(decks)
                     else:
                         print('can only split exactly two cards with the same face')
 
@@ -183,6 +195,9 @@ class Table():
         self.players=[]
         for p in range(NPLAYERS):
             self.players.append(Human())
+    def collectWagers(self):
+        for p in self.players:
+            p.hands[0].wager=MINBET
     def removeCards(self):
         pass
     def shuffle(self):
@@ -215,6 +230,7 @@ class Table():
     def playerDecision(self):
         return self.players[0].decide(self.decks)
     def deal(self):
+        self.cDealer=Hand()
         dealerCards=self.cDealer.cards
         self.nGames+=1
         for i in range(NPLAYERS):
@@ -258,6 +274,7 @@ while True:
     t.look()
     #t.omniLook()
     #t.valLook()
+    t.collectWagers()
     result=t.playerDecision()
     if(result=='q'):      #quit
         break
