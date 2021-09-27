@@ -12,6 +12,58 @@ class Player(object):
     def __init__(self):
         self.hands=[]
 
+class Human(Player):
+    def __init__(self):
+        super().__init__()
+    def decide(self,decks):
+        player=self.hands
+        split=False
+        for hand in player:
+            h=hand.cards
+            choice='?'
+            while(choice!='n'):
+                if(len(h)==1):
+                    h.append(decks.pop())
+                    continue
+                    
+                print("player0:%s"%(strHand(h)))
+                print("value:%d"%(valHand(h)))
+                print("hit? (y/n/d/s/q)")
+                choice=input()
+                if(choice=='y'):
+                    h.append(decks.pop())
+#                    print("player0:%s"%(strHand(h)))
+#                    print("value:%d"%(valHand(h)))
+                    bust=checkBust(h)
+                    if(bust):
+                        print("*bust")
+                        break
+                elif(choice=='s'):
+                    if(sameFace(h) and (len(h)==2)):
+                        print("split")
+                        newHand1=Hand()
+                        newHand2=Hand()
+                        newHand1.cards=[copy.deepcopy(h[0])]
+                        newHand2.cards=[copy.deepcopy(h[1])]
+                        newHand1.handval=0
+                        newHand2.handval=0
+                        player.remove(hand)
+                        player.append(newHand1)
+                        player.append(newHand2)
+                        return self.decide()
+                    else:
+                        print('can only split exactly two cards with the same face')
+
+                elif(choice=='q'):
+                    return'q'
+                elif(choice!='n'):
+                    print('invalid command')
+            print("player0:%s"%(strHand(h)))
+            recentVal=valHand(h)
+            if(recentVal==22):
+                print("*blackjack")
+            hand.handval=recentVal
+
 soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
 MINBET=10
@@ -131,7 +183,7 @@ class Table():
         self.cDealer=Hand()
         self.players=[]
         for p in range(NPLAYERS):
-            self.players.append([Hand()])
+            self.players.append(Human())
     def shuffle(self):
         self.decks=getShuffledDeck()
     def dealerDecision(self):
@@ -159,61 +211,16 @@ class Table():
         time.sleep(DEALERDELAY)
         print("*dealer stands")
         return valHand(dealerCards)
-    def playerDecisions(self,player):
-        split=False
-        for hand in player:
-            h=hand.cards
-            choice='?'
-            while(choice!='n'):
-                if(len(h)==1):
-                    h.append(self.decks.pop())
-                    continue
-                    
-                print("player0:%s"%(strHand(h)))
-                print("value:%d"%(valHand(h)))
-                print("hit? (y/n/d/s/q)")
-                choice=input()
-                if(choice=='y'):
-                    h.append(self.decks.pop())
-#                    print("player0:%s"%(strHand(h)))
-#                    print("value:%d"%(valHand(h)))
-                    bust=checkBust(h)
-                    if(bust):
-                        print("*bust")
-                        break
-                elif(choice=='s'):
-                    if(sameFace(h) and (len(h)==2)):
-                        print("split")
-                        newHand1=Hand()
-                        newHand2=Hand()
-                        newHand1.cards=[copy.deepcopy(h[0])]
-                        newHand2.cards=[copy.deepcopy(h[1])]
-                        newHand1.handval=0
-                        newHand2.handval=0
-                        player.remove(hand)
-                        player.append(newHand1)
-                        player.append(newHand2)
-                        return self.playerDecisions(player)
-                    else:
-                        print('can only split exactly two cards with the same face')
-
-                elif(choice=='q'):
-                    return'q'
-                elif(choice!='n'):
-                    print('invalid command')
-            print("player0:%s"%(strHand(h)))
-            recentVal=valHand(h)
-            if(recentVal==22):
-                print("*blackjack")
-            hand.handval=recentVal
     def playerDecision(self):
-        return self.playerDecisions(self.players[0])
+        return self.players[0].decide(self.decks)
     def deal(self):
         dealerCards=self.cDealer.cards
         self.nGames+=1
+        for i in range(NPLAYERS):
+            self.players[i].hands=[Hand()]
         for j in range(2):
             for i in range(NPLAYERS):
-                self.players[i][0].cards.append(self.decks.pop())
+                self.players[i].hands[0].cards.append(self.decks.pop())
             dealerCards.append(self.decks.pop())
     def valLook(self):
         dealerCards=self.cDealer.cards
@@ -232,7 +239,7 @@ class Table():
         for i in range(1,NPLAYERS):
             print("player%d:%s"%(i,strHand(self.players[i][0].cards)))
     def look(self):
-        playerCards=self.players[0][0].cards
+        playerCards=self.players[0].hands[0].cards
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: [?? %s]"%(strCard(dealerCards[1])))
@@ -255,7 +262,7 @@ while True:
         break
     dval=t.dealerDecision()
     i=1
-    for hand in t.players[0]:
+    for hand in t.players[0].hands:
         pval=hand.handval
         print('hand %d: %d %d'%(i,pval,dval))
         i+=1
