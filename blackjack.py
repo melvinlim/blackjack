@@ -114,7 +114,7 @@ def testFunction():
         #print("%s%s"%(strFace(x),strSuit(x)))
         print(strCard(x))
 
-def getShuffled():
+def getShuffledDeck():
     return sample(range(52*NDECKS),52*NDECKS)
 
 def checkBust(h):
@@ -122,22 +122,17 @@ def checkBust(h):
         return True
     return False
 
-#d=getShuffled()
-#print(d)
-
-#for c in d:
-#    print(strCard(c))
-
 class Table():
-    nGames=0
-    decks=range(52*NDECKS)
+    def __init__(self):
+        self.nGames=0
+        self.decks=getShuffledDeck()
     def removeCards(self):
         self.cDealer=Hand()
         self.cPlayer=[]
         for p in range(NPLAYERS):
             self.cPlayer.append([Hand()])
     def shuffle(self):
-        self.decks=getShuffled()
+        self.decks=getShuffledDeck()
     def dealerDecision(self):
         dealerCards=self.cDealer.cards
         bust=False
@@ -246,7 +241,6 @@ class Table():
 
 #testFunction()
 t=Table()
-t.shuffle()
 bankroll=STARTINGBANKROLL
 betsize=MINBET
 while True:
