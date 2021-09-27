@@ -165,6 +165,10 @@ class Table():
             h=hand.cards
             choice='?'
             while(choice!='n'):
+                if(len(h)==1):
+                    h.append(self.decks.pop())
+                    continue
+                    
                 print("player0:%s"%(strHand(h)))
                 print("value:%d"%(valHand(h)))
                 print("hit? (y/n/d/s/q)")
