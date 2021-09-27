@@ -10,7 +10,7 @@ class Hand(object):
 
 class Player(object):
     def __init__(self):
-        self.hand=Hand()
+        self.hands=[]
 
 soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
@@ -213,7 +213,6 @@ class Table():
     def playerDecision(self):
         return self.playerDecisions(self.cPlayer[0])
     def deal(self):
-        assert(len(self.decks)>1+NPLAYERS)
         dealerCards=self.cDealer.cards
         self.nGames+=1
         for j in range(2):
