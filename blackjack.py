@@ -16,9 +16,9 @@ class Human(Player):
     def __init__(self):
         super().__init__()
     def decide(self,decks):
-        player=self.hands
+        playerHands=self.hands
         split=False
-        for hand in player:
+        for hand in playerHands:
             h=hand.cards
             choice='?'
             while(choice!='n'):
@@ -47,9 +47,9 @@ class Human(Player):
                         newHand2.cards=[copy.deepcopy(h[1])]
                         newHand1.handval=0
                         newHand2.handval=0
-                        player.remove(hand)
-                        player.append(newHand1)
-                        player.append(newHand2)
+                        playerHands.remove(hand)
+                        playerHands.append(newHand1)
+                        playerHands.append(newHand2)
                         return self.decide()
                     else:
                         print('can only split exactly two cards with the same face')
