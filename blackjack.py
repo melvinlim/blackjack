@@ -178,12 +178,12 @@ class Table():
     def __init__(self):
         self.nGames=0
         self.decks=getShuffledDeck()
-        self.removeCards()
-    def removeCards(self):
         self.cDealer=Hand()
         self.players=[]
         for p in range(NPLAYERS):
             self.players.append(Human())
+    def removeCards(self):
+        pass
     def shuffle(self):
         self.decks=getShuffledDeck()
     def dealerDecision(self):
