@@ -173,6 +173,10 @@ class Table():
                     h.append(self.decks.pop())
 #                    print("player0:%s"%(strHand(h)))
 #                    print("value:%d"%(valHand(h)))
+                    bust=checkBust(h)
+                    if(bust):
+                        print("*bust")
+                        break
                 elif(choice=='s'):
                     print("split")
                     newHand1=Hand()
@@ -188,11 +192,6 @@ class Table():
 
                 elif(choice=='q'):
                     return'q'
-                    
-                bust=checkBust(h)
-                if(bust):
-                    print("*bust")
-                    break
             print("player0:%s"%(strHand(h)))
             recentVal=valHand(h)
             if(recentVal==22):
