@@ -126,6 +126,7 @@ class Table():
     def __init__(self):
         self.nGames=0
         self.decks=getShuffledDeck()
+        self.removeCards()
     def removeCards(self):
         self.cDealer=Hand()
         self.cPlayer=[]
@@ -244,7 +245,6 @@ t=Table()
 bankroll=STARTINGBANKROLL
 betsize=MINBET
 while True:
-    t.removeCards()
     print()
     t.deal()
     t.look()
