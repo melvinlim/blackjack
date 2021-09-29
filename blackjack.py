@@ -40,14 +40,12 @@ class Human(Player):
                 if(hand.hasDoubled):
                     break
                     
-                print("player0:%s"%(strHand(h)))
+                print("%s:%s"%(self.pid,strHand(h)))
                 print("value:%d"%(valHand(h)))
                 print("hit? (y/n/d/s/q)")
                 choice=input()
                 if(choice=='y'):
                     h.append(decks.pop())
-#                    print("player0:%s"%(strHand(h)))
-#                    print("value:%d"%(valHand(h)))
                     bust=checkBust(h)
                     if(bust):
                         print("*bust")
@@ -59,8 +57,6 @@ class Human(Player):
                     hand.wager=newWager
                     hand.hasDoubled=True
                     h.append(decks.pop())
-#                    print("player0:%s"%(strHand(h)))
-#                    print("value:%d"%(valHand(h)))
                     bust=checkBust(h)
                     if(bust):
                         print("*bust")
@@ -85,7 +81,7 @@ class Human(Player):
                     return'q'
                 elif(choice!='n'):
                     print('invalid command')
-            print("player0:%s"%(strHand(h)))
+            print("%s:%s"%(self.pid,strHand(h)))
             recentVal=valHand(h)
             if(recentVal==22):
                 print("*blackjack")
@@ -238,7 +234,7 @@ class Table():
         return valHand(dealerCards)
     def playerDecision(self):
         return self.players[0].decide(self.decks)
-    def deal(self):
+    def dealHands(self):
         self.cDealer=Hand()
         dealerCards=self.cDealer.cards
         self.nGames+=1
@@ -278,7 +274,7 @@ t=Table()
 betsize=MINBET
 while True:
     print()
-    t.deal()
+    t.dealHands()
     t.look()
     #t.omniLook()
     #t.valLook()
