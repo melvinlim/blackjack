@@ -253,21 +253,15 @@ class Table():
                 cards=hand.cards
                 print("player%d:%d"%(i,valHand(cards)))
     def omniLook(self):
-        playerCards=self.players[0][0].cards
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: %s"%(strHand(dealerCards)))
-        print("player0:%s"%(strHand(playerCards)))
-        for i in range(1,NPLAYERS):
-            print("player%d:%s"%(i,strHand(self.players[i][0].cards)))
+        for player in self.players:
+            print("%s:%s"%(player.pid,strHand(player.hands[0].cards)))
     def look(self):
-        playerCards=self.players[0].hands[0].cards
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: [?? %s]"%(strCard(dealerCards[1])))
-#        print("player0:%s"%(strHand(playerCards)))
-#        for i in range(1,NPLAYERS):
-#            print("player%d:[?? ??]"%(i))
 
 #testFunction()
 t=Table()
