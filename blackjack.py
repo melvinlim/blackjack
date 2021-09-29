@@ -6,7 +6,7 @@ soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
 MINBET=10
 NDECKS=4
-#NPLAYERS=2
+NPLAYERS=2
 NPLAYERS=1
 STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
@@ -199,8 +199,11 @@ class Table():
         self.decks=getShuffledDeck()
         self.cDealer=Hand()
         self.players=[]
+        i=0
         for p in range(NPLAYERS):
-            self.players.append(Human('p0'))
+            pid='player'+str(i)
+            self.players.append(Human(pid))
+            i+=1
     def collectWagers(self):
         for p in self.players:
             p.hands[0].wager=MINBET
