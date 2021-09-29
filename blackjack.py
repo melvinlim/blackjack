@@ -6,8 +6,8 @@ soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
 MINBET=10
 NDECKS=4
-NPLAYERS=2
 NPLAYERS=1
+NPLAYERS=2
 STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
 
@@ -278,9 +278,10 @@ while True:
         break
     dval=t.dealerDecision()
     i=1
-    for player in t.players:
+    for player in reversed(t.players):
         for hand in player.hands:
-            pval=hand.handval
+            print("%s:%s"%(player.pid,strHand(hand.cards)))
+            pval=valHand(hand.cards)
             print('hand %d: %d %d'%(i,pval,dval))
             i+=1
             if(pval==0):
