@@ -5,11 +5,22 @@ import copy
 soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
 MINBET=10
-NDECKS=4
+NDECKS=1
 NPLAYERS=1
 NPLAYERS=2
 STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
+
+class Deck(object):
+    def __init__(self):
+        self.shuffle()
+    def shuffle(self):
+        print('*shuffling')
+        self.deckCards=sample(range(52*NDECKS),52*NDECKS)
+    def dealCard(self):
+        if(len(self.deckCards)==0):
+            self.shuffle()
+        return self.deckCards.pop()
 
 class Hand(object):
     def __init__(self):
@@ -35,7 +46,7 @@ class Human(Player):
             choice='?'
             while(choice!='n'):
                 if(len(h)==1):
-                    h.append(decks.pop())
+                    h.append(decks.dealCard())
                     continue
                 if(hand.hasDoubled):
                     break
@@ -45,7 +56,7 @@ class Human(Player):
                 print("hit? (y/n/d/s/q)")
                 choice=input()
                 if(choice=='y'):
-                    h.append(decks.pop())
+                    h.append(decks.dealCard())
                     bust=checkBust(h)
                     if(bust):
                         print("*bust")
@@ -56,7 +67,7 @@ class Human(Player):
                     print("wager: %d -> %d"%(hand.wager,newWager))
                     hand.wager=newWager
                     hand.hasDoubled=True
-                    h.append(decks.pop())
+                    h.append(decks.dealCard())
                     bust=checkBust(h)
                     if(bust):
                         print("*bust")
@@ -181,9 +192,6 @@ def testFunction():
         #print("%s%s"%(strFace(x),strSuit(x)))
         print(strCard(x))
 
-def getShuffledDeck():
-    return sample(range(52*NDECKS),52*NDECKS)
-
 def checkBust(h):
     if(valHand(h)==0):
         return True
@@ -192,7 +200,7 @@ def checkBust(h):
 class Table():
     def __init__(self):
         self.nGames=0
-        self.decks=getShuffledDeck()
+        self.decks=Deck()
         self.cDealer=Hand()
         self.players=[]
         i=0
@@ -206,7 +214,7 @@ class Table():
     def removeCards(self):
         pass
     def shuffle(self):
-        self.decks=getShuffledDeck()
+        self.decks.shuffle()
     def dealerDecision(self):
         dealerCards=self.cDealer.cards
         bust=False
@@ -220,7 +228,7 @@ class Table():
             return 22
         while((dval<17) or (soft17rule and isSoft17(dealerCards))):
             time.sleep(DEALERDELAY)
-            dealerCards.append(self.decks.pop())
+            dealerCards.append(self.decks.dealCard())
             dval=valHand(dealerCards)
             print("*dealer hits")
             print("dealer: %s"%(strHand(dealerCards)))
@@ -242,8 +250,8 @@ class Table():
             self.players[i].hands=[Hand()]
         for j in range(2):
             for i in range(NPLAYERS):
-                self.players[i].hands[0].cards.append(self.decks.pop())
-            dealerCards.append(self.decks.pop())
+                self.players[i].hands[0].cards.append(self.decks.dealCard())
+            dealerCards.append(self.decks.dealCard())
     def valLook(self):
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
