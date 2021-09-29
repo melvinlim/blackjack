@@ -19,12 +19,14 @@ class Hand(object):
         self.hasDoubled=False
 
 class Player(object):
-    def __init__(self):
+    def __init__(self,pid):
+        self.pid=pid
         self.hands=[]
+        self.bankroll=STARTINGBANKROLL
 
 class Human(Player):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,pid):
+        super().__init__(pid)
     def decide(self,decks):
         playerHands=self.hands
         split=False
@@ -198,7 +200,7 @@ class Table():
         self.cDealer=Hand()
         self.players=[]
         for p in range(NPLAYERS):
-            self.players.append(Human())
+            self.players.append(Human('p0'))
     def collectWagers(self):
         for p in self.players:
             p.hands[0].wager=MINBET
@@ -270,7 +272,6 @@ class Table():
 
 #testFunction()
 t=Table()
-bankroll=STARTINGBANKROLL
 betsize=MINBET
 while True:
     print()
@@ -291,14 +292,14 @@ while True:
             i+=1
             if(pval==0):
                 print('*bust')
-                print('*player loss')
-                bankroll-=hand.wager
+                print('*%s lost'%player.pid)
+                player.bankroll-=hand.wager
             elif(pval==dval):
                 print('*tie')
             elif(pval>dval):
-                print('*player win')
-                bankroll+=hand.wager
+                print('*%s won'%player.pid)
+                player.bankroll+=hand.wager
             else:
-                print('*player loss')
-                bankroll-=hand.wager
-            print('*bankroll:%d'%bankroll)
+                print('*%s lost'%player.pid)
+                player.bankroll-=hand.wager
+            print('*%s bankroll:%d'%(player.pid,player.bankroll))
