@@ -271,6 +271,31 @@ class Table():
         dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
         print("dealer: [?? %s]"%(strCard(dealerCards[1])))
+    def calculateWinners(self):
+        dval=self.dealerDecision()
+        for player in reversed(self.players):
+            handnum=1
+            for hand in player.hands:
+                print("%s:%s"%(player.pid,strHand(hand.cards)))
+                pval=valHand(hand.cards)
+                print('hand %d: %d %d'%(handnum,pval,dval))
+                handnum+=1
+                if(pval==0):
+                    print('*bust')
+                    print('*%s lost'%player.pid)
+                    player.bankroll-=hand.wager
+                elif(pval==dval):
+                    print('*tie')
+                elif(pval>dval):
+                    print('*%s won'%player.pid)
+                    if(pval==22):
+                        player.bankroll+=BLACKJACKMODIFIER*hand.wager
+                    else:
+                        player.bankroll+=hand.wager
+                else:
+                    print('*%s lost'%player.pid)
+                    player.bankroll-=hand.wager
+                print('*%s bankroll:%d'%(player.pid,player.bankroll))
 
 #testFunction()
 t=Table()
@@ -285,27 +310,4 @@ while True:
     result=t.playerDecision()
     if(result=='q'):      #quit
         break
-    dval=t.dealerDecision()
-    for player in reversed(t.players):
-        handnum=1
-        for hand in player.hands:
-            print("%s:%s"%(player.pid,strHand(hand.cards)))
-            pval=valHand(hand.cards)
-            print('hand %d: %d %d'%(handnum,pval,dval))
-            handnum+=1
-            if(pval==0):
-                print('*bust')
-                print('*%s lost'%player.pid)
-                player.bankroll-=hand.wager
-            elif(pval==dval):
-                print('*tie')
-            elif(pval>dval):
-                print('*%s won'%player.pid)
-                if(pval==22):
-                    player.bankroll+=BLACKJACKMODIFIER*hand.wager
-                else:
-                    player.bankroll+=hand.wager
-            else:
-                print('*%s lost'%player.pid)
-                player.bankroll-=hand.wager
-            print('*%s bankroll:%d'%(player.pid,player.bankroll))
+    t.calculateWinners()
