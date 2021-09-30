@@ -71,7 +71,8 @@ class Human(Player):
             if(recentVal==22):
                 print("%s:%s"%(self.pid,strHand(h)))
                 print("value:%d"%(valHand(h)))
-                print("*blackjack")
+                if(not hand.hasSplit):
+                    print("*blackjack")
                 return
             choice='?'
             while(choice!='n'):
@@ -212,14 +213,9 @@ def strHand(h):
     return ret
     #return "[%s %s]"%(strCard(h[0]),strCard(h[1]))
 
-def testFunction():
-    for i in range(52*NDECKS):
-        x=i
-        #print(x)
-        #print(strSuit(x))
-        #print(strFace(x))
-        #print("%s%s"%(strFace(x),strSuit(x)))
-        print(strCard(x))
+def testFunction(t):
+    t.decks.deckCards=[0,11,24,13,12,25]
+    t.decks.deckCards=[0,11,38,13,12,25]
 
 def checkBust(h):
     if(valHand(h)==0):
@@ -328,8 +324,8 @@ class Table():
                     player.bankroll-=hand.wager
                 print('*%s bankroll:%d'%(player.pid,player.bankroll))
 
-#testFunction()
 t=Table()
+#testFunction(t)
 betsize=MINBET
 while True:
     print()
