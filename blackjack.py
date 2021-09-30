@@ -36,9 +36,17 @@ class Player(object):
         self.hands=[]
         self.bankroll=STARTINGBANKROLL
 
+class Stays(Player):
+    def makeWager(self):
+        print("other wager")
+        self.hands[0].wager=MINBET
+
 class Human(Player):
     def __init__(self,pid):
         super().__init__(pid)
+    def makeWager(self):
+        print("human wager")
+        self.hands[0].wager=MINBET
     def decide(self,decks):
         playerHands=self.hands
         split=False
@@ -205,13 +213,15 @@ class Table():
         self.cDealer=Hand()
         self.players=[]
         i=0
-        for p in range(NPLAYERS):
-            pid='player'+str(i)
-            self.players.append(Human(pid))
+        pid='player'+str(i)
+        self.players.append(Human(pid))
+        for p in range(1,NPLAYERS):
             i+=1
-    def collectWagers(self):
+            pid='player'+str(i)
+            self.players.append(Stays(pid))
+    def makeWagers(self):
         for p in self.players:
-            p.hands[0].wager=MINBET
+            p.makeWager()
     def removeCards(self):
         pass
     def shuffle(self):
@@ -278,6 +288,7 @@ class Table():
             for hand in player.hands:
                 print("%s:%s"%(player.pid,strHand(hand.cards)))
                 pval=valHand(hand.cards)
+                print('wager: %d'%hand.wager)
                 print('hand %d: %d %d'%(handnum,pval,dval))
                 handnum+=1
                 if(pval==0):
@@ -306,7 +317,7 @@ while True:
     t.look()
     #t.omniLook()
     #t.valLook()
-    t.collectWagers()
+    t.makeWagers()
     result=t.playerDecision()
     if(result=='q'):      #quit
         break
