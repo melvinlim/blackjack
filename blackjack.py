@@ -33,18 +33,22 @@ class Hand(object):
 class Player(object):
     def __init__(self,pid):
         self.pid=pid
-        self.hands=[]
+        self.hands=[Hand()]
         self.bankroll=STARTINGBANKROLL
 
 class Stays(Player):
     def makeWager(self):
+        self.hands=[Hand()]
         self.hands[0].wager=MINBET
 
 class Human(Player):
     def __init__(self,pid):
         super().__init__(pid)
     def makeWager(self):
-        print('change wager? (y/[n])')
+        previousWager=self.hands[0].wager
+        self.hands=[Hand()]
+        self.hands[0].wager=previousWager
+        print('change wager? (y/[n]/q)')
         inp=input()
         if(inp=='y'):
             print('wager amount?')
@@ -54,7 +58,9 @@ class Human(Player):
                 return
             else:
                 print('wager must be a number')
-        self.hands[0].wager=MINBET
+        elif(inp=='q'):
+            exit(1)
+        #self.hands[0].wager=MINBET
     def decide(self,decks):
         playerHands=self.hands
         split=False
@@ -265,8 +271,8 @@ class Table():
         self.cDealer=Hand()
         dealerCards=self.cDealer.cards
         self.nGames+=1
-        for i in range(NPLAYERS):
-            self.players[i].hands=[Hand()]
+        #for i in range(NPLAYERS):
+        #    self.players[i].hands=[Hand()]
         for j in range(2):
             for i in range(NPLAYERS):
                 self.players[i].hands[0].cards.append(self.decks.dealCard())
@@ -321,11 +327,11 @@ t=Table()
 betsize=MINBET
 while True:
     print()
+    t.makeWagers()
     t.dealHands()
     t.look()
     #t.omniLook()
     #t.valLook()
-    t.makeWagers()
     result=t.playerDecision()
     if(result=='q'):      #quit
         break
