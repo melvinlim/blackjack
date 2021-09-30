@@ -63,9 +63,13 @@ class Human(Player):
         #self.hands[0].wager=MINBET
     def decide(self,decks):
         playerHands=self.hands
-        split=False
         for hand in playerHands:
             h=hand.cards
+            recentVal=valHand(h)
+            hand.handval=recentVal
+            if(recentVal==22):
+                print("*blackjack")
+                return
             choice='?'
             while(choice!='n'):
                 if(len(h)==1):
@@ -115,11 +119,6 @@ class Human(Player):
                     exit(1)
                 elif(choice!='n'):
                     print('invalid command')
-            print("%s:%s"%(self.pid,strHand(h)))
-            recentVal=valHand(h)
-            if(recentVal==22):
-                print("*blackjack")
-            hand.handval=recentVal
 
 def valCard(c):
     v=int(c%13)
