@@ -112,7 +112,7 @@ class Human(Player):
                         print('can only split exactly two cards with the same face')
 
                 elif(choice=='q'):
-                    return'q'
+                    exit(1)
                 elif(choice!='n'):
                     print('invalid command')
             print("%s:%s"%(self.pid,strHand(h)))
@@ -266,7 +266,7 @@ class Table():
         print("*dealer stands")
         return valHand(dealerCards)
     def playerDecision(self):
-        return self.players[0].decide(self.decks)
+        self.players[0].decide(self.decks)
     def dealHands(self):
         self.cDealer=Hand()
         dealerCards=self.cDealer.cards
@@ -302,8 +302,8 @@ class Table():
             for hand in player.hands:
                 print("%s:%s"%(player.pid,strHand(hand.cards)))
                 pval=valHand(hand.cards)
-                print('wager: %d'%hand.wager)
-                print('hand %d: %d %d'%(handnum,pval,dval))
+                print('%s wager: %d'%(player.pid,hand.wager))
+                print('%s hand %d: %d %d'%(player.pid,handnum,pval,dval))
                 handnum+=1
                 if(pval==0):
                     print('*bust')
@@ -332,7 +332,5 @@ while True:
     t.look()
     #t.omniLook()
     #t.valLook()
-    result=t.playerDecision()
-    if(result=='q'):      #quit
-        break
+    t.playerDecision()
     t.calculateWinners()
