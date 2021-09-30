@@ -282,6 +282,8 @@ class Table():
                     exit(1)
                 elif(choice!='n'):
                     print('invalid command')
+            recentVal=valHand(h)
+            hand.handval=recentVal
     def dealHands(self):
         self.cDealer=Hand()
         dealerCards=self.cDealer.cards
