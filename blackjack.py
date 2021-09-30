@@ -249,7 +249,6 @@ class Table():
                     print("doubling down")
                     newWager=hand.wager*2
                     print("wager: %d -> %d"%(hand.wager,newWager))
-                    hand.wager=newWager
                     hand.hasDoubled=True
                     h.append(decks.dealCard())
                     bust=checkBust(h)
@@ -317,27 +316,31 @@ class Table():
         for player in reversed(self.players):
             handnum=1
             for hand in player.hands:
+                if hand.hasDoubled:
+                    wager=2*hand.wager
+                else:
+                    wager=hand.wager
                 print("%s:%s"%(player.pid,strHand(hand.cards)))
                 #pval=valHand(hand.cards)
                 pval=hand.handval
-                print('%s wager: %d'%(player.pid,hand.wager))
+                print('%s wager: %d'%(player.pid,wager))
                 print('%s hand %d: %d %d'%(player.pid,handnum,pval,dval))
                 handnum+=1
                 if(pval==0):
                     print('*bust')
                     print('*%s lost'%player.pid)
-                    player.bankroll-=hand.wager
+                    player.bankroll-=wager
                 elif(pval==dval):
                     print('*tie')
                 elif(pval>dval):
                     print('*%s won'%player.pid)
                     if(pval==22 and (not hand.hasSplit)):
-                        player.bankroll+=BLACKJACKMODIFIER*hand.wager
+                        player.bankroll+=BLACKJACKMODIFIER*wager
                     else:
-                        player.bankroll+=hand.wager
+                        player.bankroll+=wager
                 else:
                     print('*%s lost'%player.pid)
-                    player.bankroll-=hand.wager
+                    player.bankroll-=wager
                 print('*%s bankroll:%d'%(player.pid,player.bankroll))
 
 t=Table()
