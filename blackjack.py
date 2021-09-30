@@ -10,6 +10,7 @@ NPLAYERS=1
 NPLAYERS=2
 STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
+BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
 
 class Deck(object):
     def __init__(self):
@@ -300,7 +301,10 @@ while True:
                 print('*tie')
             elif(pval>dval):
                 print('*%s won'%player.pid)
-                player.bankroll+=hand.wager
+                if(pval==22):
+                    player.bankroll+=BLACKJACKMODIFIER*hand.wager
+                else:
+                    player.bankroll+=hand.wager
             else:
                 print('*%s lost'%player.pid)
                 player.bankroll-=hand.wager
