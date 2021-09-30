@@ -41,6 +41,8 @@ class Stays(Player):
     def makeWager(self):
         self.hands=[Hand()]
         self.hands[0].wager=MINBET
+    def decide(self,h):
+        return 'n'
 
 class Human(Player):
     def __init__(self,pid):
@@ -156,6 +158,8 @@ def strHand(h):
 def testFunction(t):
     t.decks.deckCards=[0,11,24,13,12,25]
     t.decks.deckCards=[0,11,38,13,12,25]
+    t.decks.deckCards=[4,50,51,22,23,0,11,38,13,12,25]
+    t.decks.deckCards=[0,11,38,13,12,25]
 
 def checkBust(h):
     if(valHand(h)==0):
@@ -207,10 +211,11 @@ class Table():
         time.sleep(DEALERDELAY)
         print("*dealer stands")
         return valHand(dealerCards)
-    def playerDecision(self):
-        #self.players[0].decide(self.decks)
+    def playerDecisions(self):
+        for player in self.players:
+            self.playerDecision(player)
+    def playerDecision(self,player):
         decks=self.decks
-        player=self.players[0]
         playerHands=player.hands
         for hand in playerHands:
             h=hand.cards
@@ -219,9 +224,12 @@ class Table():
             if(recentVal==22):
                 print("%s:%s"%(player.pid,strHand(h)))
                 print("value:%d"%(valHand(h)))
-                if(not hand.hasSplit):
+                if(hand.hasSplit):
+                    hand.handval=21
+                else:
                     print("*blackjack")
-                return
+                print("value:%d"%(valHand(h)))
+                continue
             choice='?'
             while(choice!='n'):
                 if(len(h)==1):
@@ -262,9 +270,11 @@ class Table():
                         newHand1.wager=hand.wager
                         newHand2.wager=hand.wager
                         playerHands.remove(hand)
+                        newHand1.cards.append(decks.dealCard())
+                        newHand2.cards.append(decks.dealCard())
                         playerHands.append(newHand1)
                         playerHands.append(newHand2)
-                        return self.playerDecision()
+                        return self.playerDecision(player)
                     else:
                         print('can only split exactly two cards with the same face')
 
@@ -306,7 +316,8 @@ class Table():
             handnum=1
             for hand in player.hands:
                 print("%s:%s"%(player.pid,strHand(hand.cards)))
-                pval=valHand(hand.cards)
+                #pval=valHand(hand.cards)
+                pval=hand.handval
                 print('%s wager: %d'%(player.pid,hand.wager))
                 print('%s hand %d: %d %d'%(player.pid,handnum,pval,dval))
                 handnum+=1
@@ -337,5 +348,5 @@ while True:
     t.look()
     #t.omniLook()
     #t.valLook()
-    t.playerDecision()
+    t.playerDecisions()
     t.calculateWinners()
