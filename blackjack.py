@@ -286,13 +286,13 @@ while True:
     if(result=='q'):      #quit
         break
     dval=t.dealerDecision()
-    i=1
     for player in reversed(t.players):
+        handnum=1
         for hand in player.hands:
             print("%s:%s"%(player.pid,strHand(hand.cards)))
             pval=valHand(hand.cards)
-            print('hand %d: %d %d'%(i,pval,dval))
-            i+=1
+            print('hand %d: %d %d'%(handnum,pval,dval))
+            handnum+=1
             if(pval==0):
                 print('*bust')
                 print('*%s lost'%player.pid)
