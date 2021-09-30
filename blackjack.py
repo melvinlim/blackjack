@@ -38,14 +38,22 @@ class Player(object):
 
 class Stays(Player):
     def makeWager(self):
-        print("other wager")
         self.hands[0].wager=MINBET
 
 class Human(Player):
     def __init__(self,pid):
         super().__init__(pid)
     def makeWager(self):
-        print("human wager")
+        print('change wager? (y/[n])')
+        inp=input()
+        if(inp=='y'):
+            print('wager amount?')
+            inp=input()
+            if(inp.isdigit()):
+                self.hands[0].wager=int(inp)
+                return
+            else:
+                print('wager must be a number')
         self.hands[0].wager=MINBET
     def decide(self,decks):
         playerHands=self.hands
