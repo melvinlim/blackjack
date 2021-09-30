@@ -62,71 +62,11 @@ class Human(Player):
         elif(inp=='q'):
             exit(1)
         #self.hands[0].wager=MINBET
-    def decide(self,decks):
-        playerHands=self.hands
-        for hand in playerHands:
-            h=hand.cards
-            recentVal=valHand(h)
-            hand.handval=recentVal
-            if(recentVal==22):
-                print("%s:%s"%(self.pid,strHand(h)))
-                print("value:%d"%(valHand(h)))
-                if(not hand.hasSplit):
-                    print("*blackjack")
-                return
-            choice='?'
-            while(choice!='n'):
-                if(len(h)==1):
-                    h.append(decks.dealCard())
-                    continue
-                if(hand.hasDoubled):
-                    break
-                    
-                print("%s:%s"%(self.pid,strHand(h)))
-                print("value:%d"%(valHand(h)))
-                print("hit? (y/n/d/s/q)")
-                choice=input()
-                if(choice=='y'):
-                    h.append(decks.dealCard())
-                    bust=checkBust(h)
-                    if(bust):
-                        print("*bust")
-                        break
-                elif(choice=='d'):
-                    print("doubling down")
-                    newWager=hand.wager*2
-                    print("wager: %d -> %d"%(hand.wager,newWager))
-                    hand.wager=newWager
-                    hand.hasDoubled=True
-                    h.append(decks.dealCard())
-                    bust=checkBust(h)
-                    if(bust):
-                        print("*bust")
-                    break
-                elif(choice=='s'):
-                    if(sameFace(h) and (len(h)==2)):
-                        print("split")
-                        newHand1=Hand()
-                        newHand2=Hand()
-                        newHand1.hasSplit=True
-                        newHand2.hasSplit=True
-                        newHand1.cards=[copy.deepcopy(h[0])]
-                        newHand2.cards=[copy.deepcopy(h[1])]
-                        newHand1.handval=0
-                        newHand2.handval=0
-                        newHand1.wager=hand.wager
-                        newHand2.wager=hand.wager
-                        playerHands.remove(hand)
-                        playerHands.append(newHand1)
-                        playerHands.append(newHand2)
-                        return self.decide(decks)
-                    else:
-                        print('can only split exactly two cards with the same face')
-
-                elif(choice=='q'):
-                    exit(1)
-                elif(choice!='n'):
-                    print('invalid command')
+    def decide(self,h):
+        print("%s:%s"%(self.pid,strHand(h)))
+        print("value:%d"%(valHand(h)))
+        print("hit? (y/n/d/s/q)")
+        return input()
 
 def valCard(c):
     v=int(c%13)
@@ -268,7 +208,70 @@ class Table():
         print("*dealer stands")
         return valHand(dealerCards)
     def playerDecision(self):
-        self.players[0].decide(self.decks)
+        #self.players[0].decide(self.decks)
+        decks=self.decks
+        player=self.players[0]
+        playerHands=player.hands
+        for hand in playerHands:
+            h=hand.cards
+            recentVal=valHand(h)
+            hand.handval=recentVal
+            if(recentVal==22):
+                print("%s:%s"%(player.pid,strHand(h)))
+                print("value:%d"%(valHand(h)))
+                if(not hand.hasSplit):
+                    print("*blackjack")
+                return
+            choice='?'
+            while(choice!='n'):
+                if(len(h)==1):
+                    h.append(decks.dealCard())
+                    continue
+                if(hand.hasDoubled):
+                    break
+                    
+                choice=player.decide(h)
+                if(choice=='y'):
+                    h.append(decks.dealCard())
+                    bust=checkBust(h)
+                    if(bust):
+                        print("*bust")
+                        break
+                elif(choice=='d'):
+                    print("doubling down")
+                    newWager=hand.wager*2
+                    print("wager: %d -> %d"%(hand.wager,newWager))
+                    hand.wager=newWager
+                    hand.hasDoubled=True
+                    h.append(decks.dealCard())
+                    bust=checkBust(h)
+                    if(bust):
+                        print("*bust")
+                    break
+                elif(choice=='s'):
+                    if(sameFace(h) and (len(h)==2)):
+                        print("split")
+                        newHand1=Hand()
+                        newHand2=Hand()
+                        newHand1.hasSplit=True
+                        newHand2.hasSplit=True
+                        newHand1.cards=[copy.deepcopy(h[0])]
+                        newHand2.cards=[copy.deepcopy(h[1])]
+                        newHand1.handval=0
+                        newHand2.handval=0
+                        newHand1.wager=hand.wager
+                        newHand2.wager=hand.wager
+                        playerHands.remove(hand)
+                        playerHands.append(newHand1)
+                        playerHands.append(newHand2)
+                        return self.playerDecision()
+                    else:
+                        print('can only split exactly two cards with the same face')
+
+                elif(choice=='q'):
+                    exit(1)
+                elif(choice!='n'):
+                    print('invalid command')
     def dealHands(self):
         self.cDealer=Hand()
         dealerCards=self.cDealer.cards
