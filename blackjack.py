@@ -29,6 +29,7 @@ class Hand(object):
         self.wager=MINBET
         self.handval=0
         self.hasDoubled=False
+        self.hasSplit=False
 
 class Player(object):
     def __init__(self,pid):
@@ -68,6 +69,8 @@ class Human(Player):
             recentVal=valHand(h)
             hand.handval=recentVal
             if(recentVal==22):
+                print("%s:%s"%(self.pid,strHand(h)))
+                print("value:%d"%(valHand(h)))
                 print("*blackjack")
                 return
             choice='?'
@@ -104,10 +107,14 @@ class Human(Player):
                         print("split")
                         newHand1=Hand()
                         newHand2=Hand()
+                        newHand1.hasSplit=True
+                        newHand2.hasSplit=True
                         newHand1.cards=[copy.deepcopy(h[0])]
                         newHand2.cards=[copy.deepcopy(h[1])]
                         newHand1.handval=0
                         newHand2.handval=0
+                        newHand1.wager=hand.wager
+                        newHand2.wager=hand.wager
                         playerHands.remove(hand)
                         playerHands.append(newHand1)
                         playerHands.append(newHand2)
@@ -312,7 +319,7 @@ class Table():
                     print('*tie')
                 elif(pval>dval):
                     print('*%s won'%player.pid)
-                    if(pval==22):
+                    if(pval==22 and (not hand.hasSplit)):
                         player.bankroll+=BLACKJACKMODIFIER*hand.wager
                     else:
                         player.bankroll+=hand.wager
