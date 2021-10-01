@@ -12,6 +12,8 @@ STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
 BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
 
+JUSTCOMPUTER=True
+
 class Deck(object):
     def __init__(self):
         self.shuffle()
@@ -39,11 +41,19 @@ class Player(object):
     def print(self,s):
         print(self.pid+' '+s)
 
+class BasicStrategy(Player):
+    def makeWager(self):
+        self.hands=[Hand()]
+        self.hands[0].wager=MINBET
+    def decide(self,h,dc):
+        print("%s:%s"%(self.pid,strHand(h)))
+        return basicStrategy(h,dc)
+
 class Stays(Player):
     def makeWager(self):
         self.hands=[Hand()]
         self.hands[0].wager=MINBET
-    def decide(self,h):
+    def decide(self,h,dc):
         return 'n'
 
 class Human(Player):
@@ -66,7 +76,7 @@ class Human(Player):
         elif(inp=='q'):
             exit(1)
         #self.hands[0].wager=MINBET
-    def decide(self,h):
+    def decide(self,h,dc):
         print("%s:%s"%(self.pid,strHand(h)))
         print("value:%d"%(valHand(h)))
         print("hit? (y/[n]/d/s/q)")
@@ -105,7 +115,7 @@ def valHand(h):
     return val
 def basicStrategy(phand,dupcard):
     dupval=valCard(dupcard)
-    if(hasAce):
+    if(hasAce(phand)):
         othercard=phand[0]
         if(strFace(othercard)=='A'):
             othercard=phand[1]
@@ -192,37 +202,37 @@ def basicStrategy(phand,dupcard):
         print('regular hand without an ace')
         handval=valHand(phand)
         if(handval>=17):
-            return 's'
+            return 'n'
         elif(handval<=8):
-            return 'h'
+            return 'y'
         elif(handval>=13):
             if(dupval<=6):
-                return 's'
+                return 'n'
             else:
-                return 'h'
+                return 'y'
         elif(handval==12):
             if(dupval<=3):
-                return 'h'
+                return 'y'
             elif(dupval<=6):
-                return 's'
+                return 'n'
             else:
-                return 'h'
+                return 'y'
         elif(handval==11):
             return 'd'
         elif(handval==10):
             if(dupval<=9):
                 return 'd'
             else:
-                return 'h'
+                return 'y'
         elif(handval==9):
             if(dupval==2):
-                return 'h'
+                return 'y'
             elif(dupval<=6):
                 return 'd'
             else:
-                return 'h'
+                return 'y'
         else:
-            return 'h'
+            return 'y'
 def hasPair(h):
     return sameFace(h)
 def hasAce(h):
@@ -304,7 +314,8 @@ class Table():
             i+=1
             pid='player'+str(i)
             pid='*'+pid+'*'
-            self.players.append(Stays(pid))
+            #self.players.append(Stays(pid))
+            self.players.append(BasicStrategy(pid))
     def makeWagers(self):
         for p in self.players:
             p.makeWager()
@@ -364,7 +375,7 @@ class Table():
                     print("%s:%s"%(player.pid,strHand(h)))
                     break
                     
-                choice=player.decide(h)
+                choice=player.decide(h,self.cDealer.cards[1])
                 if(choice=='y'):
                     h.append(decks.dealCard())
                     bust=checkBust(h)
