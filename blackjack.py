@@ -85,6 +85,8 @@ class Human(Player):
         print("value:%d"%(valHand(h)))
         print("hit? (y/[n]/d/s/q)")
         decision=input()
+        if(decision=='q'):
+            exit(1)
         if(CHECKSTRATEGY):
             if decision not in ['y','d','s']:
                 decision='n'
@@ -100,6 +102,23 @@ def valCard(c):
     if(v==12):
         return 1
     return 10
+def basicValHand(h):
+    aces=0
+    val=0
+    nCards=len(h)
+    for c in h:
+        cVal=valCard(c)
+        val+=cVal
+        if(cVal==1):
+            aces+=1
+    if(val>=21):
+        if(val>21):
+            return 0    #busted hand is worth 0.
+        elif(val==21 and nCards==2):
+            return 22   #blackjack beats 21.  should also win immediately unless dealer also has blackjack.
+        else:
+            return 21
+    return val
 def valHand(h):
     aces=0
     val=0
@@ -126,40 +145,42 @@ def valHand(h):
     return val
 def basicStrategy(phand,dupcard):
     dupval=valCard(dupcard)
-    if(hasAce(phand)):
+    handval=valHand(phand)
+    basichandval=basicValHand(phand)
+    if(hasAce(phand) and (basichandval+10)<=21):
         othercard=phand[0]
         if(strFace(othercard)=='A'):
             othercard=phand[1]
         print('has ace and '+strFace(othercard))
         if(dupval==1):  #ace
             dupval=11
-        if(othercard=='8'):
+        if(handval==19):
             if(dupval==6):
                 return 'd'
             else:
                 return 'n'
-        elif(othercard=='7'):
+        elif(handval==18):
             if(dupval<=6):
                 return 'd'
             elif(dupval<=8):
                 return 'n'
             else:
                 return 'y'
-        elif(othercard=='6'):
+        elif(handval==17):
             if(dupval==2):
                 return 'y'
             elif(dupval<=6):
                 return 'd'
             else:
                 return 'y'
-        elif((othercard=='5')or(othercard=='4')):
+        elif((handval==16)or(handval==15)):
             if(dupval<=3):
                 return 'y'
             elif(dupval<=6):
                 return 'd'
             else:
                 return 'y'
-        elif((othercard=='3')or(othercard=='2')):
+        elif((handval==14)or(handval==13)):
             if(dupval<=4):
                 return 'y'
             elif(dupval<=6):
@@ -211,7 +232,6 @@ def basicStrategy(phand,dupcard):
                 return 'y'
     else:
         print('regular hand without an ace')
-        handval=valHand(phand)
         if(handval>=17):
             return 'n'
         elif(handval<=8):
@@ -395,16 +415,19 @@ class Table():
                         player.print("bust")
                         break
                 elif(choice=='d'):
-                    player.print("doubling down")
-                    newWager=hand.wager*2
-                    player.print("wager: %d -> %d"%(hand.wager,newWager))
-                    hand.hasDoubled=True
-                    h.append(decks.dealCard())
-                    print("%s:%s"%(player.pid,strHand(h)))
-                    bust=checkBust(h)
-                    if(bust):
-                        player.print("bust")
-                    break
+                    if(len(h)==2):
+                        player.print("doubling down")
+                        newWager=hand.wager*2
+                        player.print("wager: %d -> %d"%(hand.wager,newWager))
+                        hand.hasDoubled=True
+                        h.append(decks.dealCard())
+                        print("%s:%s"%(player.pid,strHand(h)))
+                        bust=checkBust(h)
+                        if(bust):
+                            player.print("bust")
+                        break
+                    else:
+                        player.print("cannot double down after hitting or doubling down.  standing instead")
                 elif(choice=='s'):
                     if(sameFace(h) and (len(h)==2)):
                         player.print("split")
