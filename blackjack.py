@@ -36,6 +36,8 @@ class Player(object):
         self.pid=pid
         self.hands=[Hand()]
         self.bankroll=STARTINGBANKROLL
+    def print(self,s):
+        print(self.pid+' '+s)
 
 class Stays(Player):
     def makeWager(self):
@@ -174,10 +176,12 @@ class Table():
         self.players=[]
         i=0
         pid='player'+str(i)
+        pid='*'+pid+'*'
         self.players.append(Human(pid))
         for p in range(1,NPLAYERS):
             i+=1
             pid='player'+str(i)
+            pid='*'+pid+'*'
             self.players.append(Stays(pid))
     def makeWagers(self):
         for p in self.players:
@@ -222,13 +226,13 @@ class Table():
             recentVal=valHand(h)
             hand.handval=recentVal
             if(recentVal==22):
-                print("%s:%s"%(player.pid,strHand(h)))
-                print("value:%d"%(valHand(h)))
+                player.print("%s"%(strHand(h)))
+                player.print("value:%d"%(valHand(h)))
                 if(hand.hasSplit):
                     hand.handval=21
                 else:
-                    print("*blackjack")
-                print("value:%d"%(valHand(h)))
+                    player.print("blackjack")
+                player.print("value:%d"%(valHand(h)))
                 continue
             choice='?'
             while(choice!='n'):
@@ -243,21 +247,21 @@ class Table():
                     h.append(decks.dealCard())
                     bust=checkBust(h)
                     if(bust):
-                        print("*bust")
+                        player.print("bust")
                         break
                 elif(choice=='d'):
-                    print("doubling down")
+                    player.print("doubling down")
                     newWager=hand.wager*2
-                    print("wager: %d -> %d"%(hand.wager,newWager))
+                    player.print("wager: %d -> %d"%(hand.wager,newWager))
                     hand.hasDoubled=True
                     h.append(decks.dealCard())
                     bust=checkBust(h)
                     if(bust):
-                        print("*bust")
+                        player.print("bust")
                     break
                 elif(choice=='s'):
                     if(sameFace(h) and (len(h)==2)):
-                        print("split")
+                        player.print("split")
                         newHand1=Hand()
                         newHand2=Hand()
                         newHand1.hasSplit=True
@@ -275,12 +279,12 @@ class Table():
                         playerHands.append(newHand2)
                         return self.playerDecision(player)
                     else:
-                        print('can only split exactly two cards with the same face')
+                        player.print('can only split exactly two cards with the same face')
 
                 elif(choice=='q'):
                     exit(1)
                 elif(choice!='n'):
-                    print('invalid command')
+                    player.print('invalid command')
             recentVal=valHand(h)
             hand.handval=recentVal
     def dealHands(self):
@@ -320,28 +324,28 @@ class Table():
                     wager=2*hand.wager
                 else:
                     wager=hand.wager
-                print("%s:%s"%(player.pid,strHand(hand.cards)))
+                player.print("%s"%(strHand(hand.cards)))
                 #pval=valHand(hand.cards)
                 pval=hand.handval
-                print('%s wager: %d'%(player.pid,wager))
-                print('%s hand %d: %d %d'%(player.pid,handnum,pval,dval))
+                player.print('wager: %d'%(wager))
+                player.print('hand %d: %d %d'%(handnum,pval,dval))
                 handnum+=1
                 if(pval==0):
-                    print('*bust')
-                    print('*%s lost'%player.pid)
+                    player.print('bust')
+                    player.print('lost')
                     player.bankroll-=wager
                 elif(pval==dval):
-                    print('*tie')
+                    player.print('tie')
                 elif(pval>dval):
-                    print('*%s won'%player.pid)
+                    player.print('won')
                     if(pval==22 and (not hand.hasSplit)):
                         player.bankroll+=BLACKJACKMODIFIER*wager
                     else:
                         player.bankroll+=wager
                 else:
-                    print('*%s lost'%player.pid)
+                    player.print('lost')
                     player.bankroll-=wager
-                print('*%s bankroll:%d'%(player.pid,player.bankroll))
+                player.print('bankroll:%d'%(player.bankroll))
 
 t=Table()
 #testFunction(t)
