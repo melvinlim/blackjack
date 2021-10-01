@@ -18,6 +18,12 @@ CHECKSTRATEGY=True
 JUSTCOMPUTER=False
 #JUSTCOMPUTER=True
 
+DEBUG=False
+
+def dbg(x):
+    if(DEBUG):
+        print(x)
+
 class Deck(object):
     def __init__(self):
         self.shuffle()
@@ -151,7 +157,7 @@ def basicStrategy(phand,dupcard):
         othercard=phand[0]
         if(strFace(othercard)=='A'):
             othercard=phand[1]
-        print('has ace and '+strFace(othercard))
+        dbg('has ace and '+strFace(othercard))
         if(dupval==1):  #ace
             dupval=11
         if(handval==19):
@@ -191,7 +197,7 @@ def basicStrategy(phand,dupcard):
             return 'n'
     elif(hasPair(phand)):
         face=strFace(phand[0])
-        print('pair of '+face+'s')
+        dbg('pair of '+face+'s')
         if(face=='A'):
             return 's'
         elif(face in ['T','J','Q','K']):
@@ -231,7 +237,7 @@ def basicStrategy(phand,dupcard):
             else:
                 return 'y'
     else:
-        print('regular hand without an ace')
+        dbg('regular hand without an ace')
         if(handval>=17):
             return 'n'
         elif(handval<=8):
@@ -516,6 +522,14 @@ class Table():
                     player.bankroll-=wager
                 player.print('bankroll:%d'%(player.bankroll))
 
+UPDATEFREQ=1000
+UPDATEDELAY=5
+print('computer only? (y/[n])')
+dec=input()
+if(dec=='y'):
+    JUSTCOMPUTER=True
+    DEALERDELAY=0
+
 t=Table()
 #testFunction(t)
 betsize=MINBET
@@ -528,3 +542,8 @@ while True:
     #t.valLook()
     t.playerDecisions()
     t.calculateWinners()
+    if(JUSTCOMPUTER):
+        if((t.nGames%UPDATEFREQ)==0):
+            #for player in t.players:
+            #    player.print('bankroll:%d'%(player.bankroll))
+            time.sleep(UPDATEDELAY)
