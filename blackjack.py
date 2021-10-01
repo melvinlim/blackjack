@@ -142,7 +142,7 @@ def basicStrategy(phand,dupcard):
             if(dupval<=6):
                 return 'd'
             elif(dupval<=8):
-                return 's'
+                return 'n'
             else:
                 return 'y'
         elif(othercard=='6'):
