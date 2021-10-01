@@ -232,7 +232,6 @@ class Table():
                     hand.handval=21
                 else:
                     player.print("blackjack")
-                player.print("value:%d"%(valHand(h)))
                 continue
             choice='y'
             while(choice=='y'):
