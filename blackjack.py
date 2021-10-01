@@ -69,7 +69,7 @@ class Human(Player):
     def decide(self,h):
         print("%s:%s"%(self.pid,strHand(h)))
         print("value:%d"%(valHand(h)))
-        print("hit? (y/n/d/s/q)")
+        print("hit? (y/[n]/d/s/q)")
         return input()
 
 def valCard(c):
@@ -205,15 +205,15 @@ class Table():
             time.sleep(DEALERDELAY)
             dealerCards.append(self.decks.dealCard())
             dval=valHand(dealerCards)
-            print("*dealer hits")
+            print("*dealer* hits")
             print("dealer: %s"%(strHand(dealerCards)))
 #            print("dealer: %d"%(valHand(dealerCards)))
             bust=checkBust(dealerCards)
             if(bust):
-                print("*dealer busts")
+                print("*dealer* busts")
                 return 0
         time.sleep(DEALERDELAY)
-        print("*dealer stands")
+        print("*dealer* stands")
         return valHand(dealerCards)
     def playerDecisions(self):
         for player in self.players:
@@ -234,12 +234,13 @@ class Table():
                     player.print("blackjack")
                 player.print("value:%d"%(valHand(h)))
                 continue
-            choice='?'
-            while(choice!='n'):
+            choice='y'
+            while(choice=='y'):
                 if(len(h)==1):
                     h.append(decks.dealCard())
                     continue
                 if(hand.hasDoubled):
+                    print("%s:%s"%(player.pid,strHand(h)))
                     break
                     
                 choice=player.decide(h)
@@ -255,6 +256,7 @@ class Table():
                     player.print("wager: %d -> %d"%(hand.wager,newWager))
                     hand.hasDoubled=True
                     h.append(decks.dealCard())
+                    print("%s:%s"%(player.pid,strHand(h)))
                     bust=checkBust(h)
                     if(bust):
                         player.print("bust")
@@ -283,8 +285,8 @@ class Table():
 
                 elif(choice=='q'):
                     exit(1)
-                elif(choice!='n'):
-                    player.print('invalid command')
+                #elif(choice!='n'):
+                #    player.print('invalid command')
             recentVal=valHand(h)
             hand.handval=recentVal
     def dealHands(self):
