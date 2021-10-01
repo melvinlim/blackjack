@@ -103,6 +103,128 @@ def valHand(h):
     elif(val==21 and nCards==2):
         return 22   #blackjack beats 21.  should also win immediately unless dealer also has blackjack.
     return val
+def basicStrategy(phand,dupcard):
+    dupval=valCard(dupcard)
+    if(hasAce):
+        othercard=phand[0]
+        if(strFace(othercard)=='A'):
+            othercard=phand[1]
+        print('has ace and '+strFace(othercard))
+        if(dupval==1):  #ace
+            dupval=11
+        if(othercard=='8'):
+            if(dupval==6):
+                return 'd'
+            else:
+                return 'n'
+        elif(othercard=='7'):
+            if(dupval<=6):
+                return 'd'
+            elif(dupval<=8):
+                return 's'
+            else:
+                return 'h'
+        elif(othercard=='6'):
+            if(dupval==2):
+                return 'h'
+            elif(dupval<=6):
+                return 'd'
+            else:
+                return 'h'
+        elif((othercard=='5')or(othercard=='4')):
+            if(dupval<=3):
+                return 'h'
+            elif(dupval<=6):
+                return 'd'
+            else:
+                return 'h'
+        elif((othercard=='3')or(othercard=='2')):
+            if(dupval<=4):
+                return 'h'
+            elif(dupval<=6):
+                return 'd'
+            else:
+                return 'h'
+        else:
+            return 'n'
+    elif(hasPair(phand)):
+        face=strFace(phand[0])
+        print('pair of '+face+'s')
+        if(face=='A'):
+            return 's'
+        elif(face in ['T','J','Q','K']):
+            return 'n'
+        elif(face=='9'):
+            if(dupval==7):
+                return 'n'
+            elif(dupval>=10):
+                return 'n'
+            else:
+                return 's'
+        elif(face=='8'):
+            return 's'
+        elif(face=='7'):
+            if(dupval<=7):
+                return 's'
+            else:
+                return 'h'
+        elif(face=='6'):
+            if(dupval<=6):
+                return 's'
+            else:
+                return 'h'
+        elif(face=='5'):
+            if(dupval<=9):
+                return 'd'
+            else:
+                return 'h'
+        elif(face=='4'):
+            if(dupval in [5,6]):
+                return 's'
+            else:
+                return 'h'
+        elif(face in ['3','2']):
+            if(dupval<=7):
+                return 's'
+            else:
+                return 'h'
+    else:
+        print('regular hand without an ace')
+        handval=valHand(phand)
+        if(handval>=17):
+            return 's'
+        elif(handval<=8):
+            return 'h'
+        elif(handval>=13):
+            if(dupval<=6):
+                return 's'
+            else:
+                return 'h'
+        elif(handval==12):
+            if(dupval<=3):
+                return 'h'
+            elif(dupval<=6):
+                return 's'
+            else:
+                return 'h'
+        elif(handval==11):
+            return 'd'
+        elif(handval==10):
+            if(dupval<=9):
+                return 'd'
+            else:
+                return 'h'
+        elif(handval==9):
+            if(dupval==2):
+                return 'h'
+            elif(dupval<=6):
+                return 'd'
+            else:
+                return 'h'
+        else:
+            return 'h'
+def hasPair(h):
+    return sameFace(h)
 def hasAce(h):
     for c in h:
         if(strFace(c)=='A'):
