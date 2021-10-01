@@ -12,6 +12,9 @@ STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
 BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
 
+CHECKSTRATEGY=False
+CHECKSTRATEGY=True
+
 JUSTCOMPUTER=False
 #JUSTCOMPUTER=True
 
@@ -81,7 +84,14 @@ class Human(Player):
         print("%s:%s"%(self.pid,strHand(h)))
         print("value:%d"%(valHand(h)))
         print("hit? (y/[n]/d/s/q)")
-        return input()
+        decision=input()
+        if(CHECKSTRATEGY):
+            if decision not in ['y','d','s']:
+                decision='n'
+            ans=basicStrategy(h,dc)
+            if(decision!=ans):
+                print('**%s** chose %s, basic strategy would have chosen %s'%(self.pid,decision,ans))
+        return decision
 
 def valCard(c):
     v=int(c%13)
@@ -134,28 +144,28 @@ def basicStrategy(phand,dupcard):
             elif(dupval<=8):
                 return 's'
             else:
-                return 'h'
+                return 'y'
         elif(othercard=='6'):
             if(dupval==2):
-                return 'h'
+                return 'y'
             elif(dupval<=6):
                 return 'd'
             else:
-                return 'h'
+                return 'y'
         elif((othercard=='5')or(othercard=='4')):
             if(dupval<=3):
-                return 'h'
+                return 'y'
             elif(dupval<=6):
                 return 'd'
             else:
-                return 'h'
+                return 'y'
         elif((othercard=='3')or(othercard=='2')):
             if(dupval<=4):
-                return 'h'
+                return 'y'
             elif(dupval<=6):
                 return 'd'
             else:
-                return 'h'
+                return 'y'
         else:
             return 'n'
     elif(hasPair(phand)):
@@ -178,27 +188,27 @@ def basicStrategy(phand,dupcard):
             if(dupval<=7):
                 return 's'
             else:
-                return 'h'
+                return 'y'
         elif(face=='6'):
             if(dupval<=6):
                 return 's'
             else:
-                return 'h'
+                return 'y'
         elif(face=='5'):
             if(dupval<=9):
                 return 'd'
             else:
-                return 'h'
+                return 'y'
         elif(face=='4'):
             if(dupval in [5,6]):
                 return 's'
             else:
-                return 'h'
+                return 'y'
         elif(face in ['3','2']):
             if(dupval<=7):
                 return 's'
             else:
-                return 'h'
+                return 'y'
     else:
         print('regular hand without an ace')
         handval=valHand(phand)
