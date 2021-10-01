@@ -12,7 +12,8 @@ STARTINGBANKROLL=100*MINBET
 DEALERDELAY=1
 BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
 
-JUSTCOMPUTER=True
+JUSTCOMPUTER=False
+#JUSTCOMPUTER=True
 
 class Deck(object):
     def __init__(self):
@@ -309,7 +310,8 @@ class Table():
         i=0
         pid='player'+str(i)
         pid='*'+pid+'*'
-        self.players.append(Human(pid))
+        if not JUSTCOMPUTER:
+            self.players.append(Human(pid))
         for p in range(1,NPLAYERS):
             i+=1
             pid='player'+str(i)
@@ -428,8 +430,8 @@ class Table():
         #for i in range(NPLAYERS):
         #    self.players[i].hands=[Hand()]
         for j in range(2):
-            for i in range(NPLAYERS):
-                self.players[i].hands[0].cards.append(self.decks.dealCard())
+            for player in self.players:
+                player.hands[0].cards.append(self.decks.dealCard())
             dealerCards.append(self.decks.dealCard())
     def valLook(self):
         dealerCards=self.cDealer.cards
