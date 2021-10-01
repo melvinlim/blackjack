@@ -329,7 +329,7 @@ class Table():
                 #pval=valHand(hand.cards)
                 pval=hand.handval
                 player.print('wager: %d'%(wager))
-                player.print('hand %d: %d %d'%(handnum,pval,dval))
+                player.print('hand %d: pval:%d dval:%d'%(handnum,pval,dval))
                 handnum+=1
                 if(pval==0):
                     player.print('bust')
