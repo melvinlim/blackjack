@@ -33,6 +33,7 @@ class Deck(object):
         print('*shuffling')
         self.deckCards=sample(range(52*NDECKS),52*NDECKS)
         self.hilocount=0
+        self.prevhilocount=0    #count from previous hand
     def dealCard(self):
         if(len(self.deckCards)==0):
             self.shuffle()
@@ -45,7 +46,9 @@ class Deck(object):
             self.hilocount-=1
         elif valCard(c) <= 6:
             self.hilocount+=1
-        print('hl count:'+str(self.hilocount))
+        #print('true hl count:'+str(self.hilocount))
+    def gameFinished(self):
+        self.prevhilocount=self.hilocount
 
 class Hand(object):
     def __init__(self):
@@ -62,10 +65,24 @@ class Player(object):
         self.bankroll=STARTINGBANKROLL
     def print(self,s):
         print(self.pid+' '+s)
+    def updatehilo(self,c):
+        cf=strFace(c)
+        if cf in ['A','K','Q','J','T']:
+            self.hilocount-=1
+        elif valCard(c) <= 6:
+            self.hilocount+=1
+    def updatehilocount(self,h,dc):
+        self.hilocount=t.decks.prevhilocount
+        self.updatehilo(dc)
+        for c in h:
+            self.updatehilo(c)
+        print('prev hl count:'+str(t.decks.prevhilocount))
+        print('hl count:'+str(self.hilocount))
     def decide(self,h,dc):
         print("*dealer*: [?? %s]"%(strCard(dc)))
         print("%s:%s"%(self.pid,strHand(h)))
         #print("value:%d"%(valHand(h)))
+        self.updatehilocount(h,dc)
 
 class BasicStrategy(Player):
     def makeWager(self):
@@ -559,6 +576,7 @@ while True:
     #t.valLook()
     t.playerDecisions()
     t.calculateWinners()
+    t.decks.gameFinished()
     if(JUSTCOMPUTER):
         if((t.nGames%UPDATEFREQ)==0):
             #for player in t.players:
