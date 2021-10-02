@@ -391,6 +391,12 @@ class Table():
             self.players.append(BasicStrategy(pid))
     def makeWagers(self):
         for p in self.players:
+            if(p.bankroll<=0):
+                p.print('lost at game %d'%self.nGames)
+                self.players.remove(p)
+        if len(self.players)==0:
+            exit(0)
+        for p in self.players:
             p.makeWager()
     def removeCards(self):
         pass
