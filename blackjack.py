@@ -4,7 +4,9 @@ import copy
 
 soft17rule=True         #dealer hits on soft 17 (ace and 6)
 seed(time.time())
-MINBET=10
+MINBET=1
+MAXBET=100
+STARTINGBET=10
 NDECKS=1
 NPLAYERS=1
 NPLAYERS=2
@@ -53,7 +55,7 @@ class Deck(object):
 class Hand(object):
     def __init__(self):
         self.cards=[]
-        self.wager=MINBET
+        self.wager=STARTINGBET
         self.handval=0
         self.hasDoubled=False
         self.hasSplit=False
@@ -87,7 +89,6 @@ class Player(object):
 class BasicStrategy(Player):
     def makeWager(self):
         self.hands=[Hand()]
-        self.hands[0].wager=MINBET
     def decide(self,h,dc):
         super().decide(h,dc)
         return basicStrategy(h,dc)
@@ -95,7 +96,6 @@ class BasicStrategy(Player):
 class Stays(Player):
     def makeWager(self):
         self.hands=[Hand()]
-        self.hands[0].wager=MINBET
     def decide(self,h,dc):
         return 'n'
 
@@ -112,13 +112,25 @@ class Human(Player):
             print('wager amount?')
             inp=input()
             if(inp.isdigit()):
-                self.hands[0].wager=int(inp)
+                wager=int(inp)
+                if(wager>self.bankroll):
+                    print('wager must be <= bankroll')
+                    print('setting wager=bankroll')
+                    wager=self.bankroll
+                elif(wager<MINBET):
+                    print('wager must be >= MINBET')
+                    print('setting wager=MINBET')
+                    wager=MINBET
+                elif(wager>MAXBET):
+                    print('wager must be <= MAXBET')
+                    print('setting wager=MAXBET')
+                    wager=MAXBET
+                self.hands[0].wager=wager
                 return
             else:
                 print('wager must be a number')
         elif(inp=='q'):
             exit(1)
-        #self.hands[0].wager=MINBET
     def decide(self,h,dc):
         super().decide(h,dc)
         print("hit? (y/[n]/d/s/q)")
@@ -572,7 +584,6 @@ if(dec=='y'):
 
 t=Table()
 #testFunction(t)
-betsize=MINBET
 while True:
     print()
     t.makeWagers()
