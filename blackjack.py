@@ -15,6 +15,8 @@ BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
 CHECKSTRATEGY=False
 CHECKSTRATEGY=True
 
+TRAIN=True
+
 JUSTCOMPUTER=False
 #JUSTCOMPUTER=True
 
@@ -97,8 +99,11 @@ class Human(Player):
             if decision not in ['y','d','s']:
                 decision='n'
             ans=basicStrategy(h,dc)
-            if(decision!=ans):
-                print('**%s** chose %s, basic strategy would have chosen %s'%(self.pid,decision,ans))
+            if(TRAIN):
+                if(decision!=ans):
+                    print('**%s** chose %s, basic strategy would have chosen %s'%(self.pid,decision,ans))
+                else:
+                    print('**%s** played correctly according to basic strategy'%(self.pid))
         return decision
 
 def valCard(c):
