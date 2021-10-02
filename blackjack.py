@@ -10,7 +10,7 @@ STARTINGBET=10
 NDECKS=1
 NPLAYERS=1
 NPLAYERS=2
-STARTINGBANKROLL=20*STARTINGBET
+STARTINGBANKROLL=50*STARTINGBET
 STARTINGBANKROLL=10*MAXBET
 DEALERDELAY=1
 BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
@@ -106,7 +106,7 @@ class VariesBet(Player):
         previousWager=self.hands[0].wager
         self.hands=[Hand()]
         self.hands[0].wager=previousWager
-        hl=t.decks.hilocount
+        hl=t.decks.hilocount/NDECKS
         # -16 <= hl <= 20
         hl/=4
         #  -4 <= hl <=  5
@@ -219,6 +219,8 @@ def valHand(h):
     return val
 def basicStrategy(phand,dupcard):
     dupval=valCard(dupcard)
+    if(dupval==1):  #ace
+        dupval=11
     handval=valHand(phand)
     basichandval=basicValHand(phand)
     if(hasAce(phand) and (basichandval+10)<=21):
@@ -226,8 +228,6 @@ def basicStrategy(phand,dupcard):
         if(strFace(othercard)=='A'):
             othercard=phand[1]
         dbg('has ace and '+strFace(othercard))
-        if(dupval==1):  #ace
-            dupval=11
         if(handval==19):
             if(dupval==6):
                 return 'd'
