@@ -50,15 +50,20 @@ class Player(object):
         self.pid=pid
         self.hands=[Hand()]
         self.bankroll=STARTINGBANKROLL
+        self.hilocount=0
     def print(self,s):
         print(self.pid+' '+s)
+    def decide(self,h,dc):
+        print("*dealer*: [?? %s]"%(strCard(dc)))
+        print("%s:%s"%(self.pid,strHand(h)))
+        #print("value:%d"%(valHand(h)))
 
 class BasicStrategy(Player):
     def makeWager(self):
         self.hands=[Hand()]
         self.hands[0].wager=MINBET
     def decide(self,h,dc):
-        print("%s:%s"%(self.pid,strHand(h)))
+        super().decide(h,dc)
         return basicStrategy(h,dc)
 
 class Stays(Player):
@@ -89,9 +94,7 @@ class Human(Player):
             exit(1)
         #self.hands[0].wager=MINBET
     def decide(self,h,dc):
-        print("*dealer*: [?? %s]"%(strCard(dc)))
-        print("%s:%s"%(self.pid,strHand(h)))
-        print("value:%d"%(valHand(h)))
+        super().decide(h,dc)
         print("hit? (y/[n]/d/s/q)")
         decision=input()
         if(decision=='q'):
