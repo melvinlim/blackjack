@@ -89,6 +89,7 @@ class Human(Player):
             exit(1)
         #self.hands[0].wager=MINBET
     def decide(self,h,dc):
+        print("*dealer*: [?? %s]"%(strCard(dc)))
         print("%s:%s"%(self.pid,strHand(h)))
         print("value:%d"%(valHand(h)))
         print("hit? (y/[n]/d/s/q)")
@@ -371,7 +372,7 @@ class Table():
         bust=False
         dval=valHand(dealerCards)
         self.cDealer.handval=dval
-        print("dealer: %s"%(strHand(dealerCards)))
+        #print("dealer: %s"%(strHand(dealerCards)))
 #        print("dealer: %d"%(valHand(dealerCards)))
         if(dval==22):
             print("dealer: %s"%(strHand(dealerCards)))
@@ -492,9 +493,7 @@ class Table():
         for player in self.players:
             print("%s:%s"%(player.pid,strHand(player.hands[0].cards)))
     def look(self):
-        dealerCards=self.cDealer.cards
         print("game:%d"%(self.nGames))
-        print("dealer: [?? %s]"%(strCard(dealerCards[1])))
     def calculateWinners(self):
         dval=self.dealerDecision()
         for player in reversed(self.players):
