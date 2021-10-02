@@ -85,6 +85,20 @@ class Player(object):
         print("%s:%s"%(self.pid,strHand(h)))
         #print("value:%d"%(valHand(h)))
         self.updatehilocount(h,dc)
+    def checkWager(self,wager):
+        if(wager>self.bankroll):
+            print('wager must be <= bankroll')
+            print('setting wager=bankroll')
+            wager=self.bankroll
+        elif(wager<MINBET):
+            print('wager must be >= MINBET')
+            print('setting wager=MINBET')
+            wager=MINBET
+        elif(wager>MAXBET):
+            print('wager must be <= MAXBET')
+            print('setting wager=MAXBET')
+            wager=MAXBET
+        return wager
 
 class BasicStrategy(Player):
     def makeWager(self):
@@ -113,22 +127,10 @@ class Human(Player):
             inp=input()
             if(inp.isdigit()):
                 wager=int(inp)
-                if(wager>self.bankroll):
-                    print('wager must be <= bankroll')
-                    print('setting wager=bankroll')
-                    wager=self.bankroll
-                elif(wager<MINBET):
-                    print('wager must be >= MINBET')
-                    print('setting wager=MINBET')
-                    wager=MINBET
-                elif(wager>MAXBET):
-                    print('wager must be <= MAXBET')
-                    print('setting wager=MAXBET')
-                    wager=MAXBET
+                wager=self.checkWager(wager)
                 self.hands[0].wager=wager
-                return
             else:
-                print('wager must be a number')
+                print('wager must be a positive number')
         elif(inp=='q'):
             exit(1)
     def decide(self,h,dc):
