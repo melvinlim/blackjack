@@ -32,10 +32,20 @@ class Deck(object):
     def shuffle(self):
         print('*shuffling')
         self.deckCards=sample(range(52*NDECKS),52*NDECKS)
+        self.hilocount=0
     def dealCard(self):
         if(len(self.deckCards)==0):
             self.shuffle()
-        return self.deckCards.pop()
+        card=self.deckCards.pop()
+        self.updatehilo(card)
+        return card
+    def updatehilo(self,c):
+        cf=strFace(c)
+        if cf in ['A','K','Q','J','T']:
+            self.hilocount-=1
+        elif valCard(c) <= 6:
+            self.hilocount+=1
+        print('hl count:'+str(self.hilocount))
 
 class Hand(object):
     def __init__(self):
@@ -50,7 +60,6 @@ class Player(object):
         self.pid=pid
         self.hands=[Hand()]
         self.bankroll=STARTINGBANKROLL
-        self.hilocount=0
     def print(self,s):
         print(self.pid+' '+s)
     def decide(self,h,dc):
@@ -499,6 +508,7 @@ class Table():
         print("game:%d"%(self.nGames))
     def calculateWinners(self):
         dval=self.dealerDecision()
+        print("*dealer*  %s"%(strHand(self.cDealer.cards)))
         for player in reversed(self.players):
             handnum=1
             for hand in player.hands:
