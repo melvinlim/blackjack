@@ -10,7 +10,8 @@ STARTINGBET=10
 NDECKS=1
 NPLAYERS=1
 NPLAYERS=2
-STARTINGBANKROLL=100*MINBET
+STARTINGBANKROLL=20*STARTINGBET
+STARTINGBANKROLL=10*MAXBET
 DEALERDELAY=1
 BLACKJACKMODIFIER=2 #2 for blackjack paying 2 to 1
 
@@ -99,6 +100,24 @@ class Player(object):
             print('setting wager=MAXBET')
             wager=MAXBET
         return wager
+
+class VariesBet(Player):
+    def makeWager(self):
+        previousWager=self.hands[0].wager
+        self.hands=[Hand()]
+        self.hands[0].wager=previousWager
+        hl=t.decks.hilocount
+        # -16 <= hl <= 20
+        hl/=4
+        #  -4 <= hl <=  5
+        hl+=5
+        hl=int(hl)
+        #   1 <= hl <= 10
+        hl*=(MAXBET/10)
+        self.hands[0].wager=hl
+    def decide(self,h,dc):
+        super().decide(h,dc)
+        return basicStrategy(h,dc)
 
 class BasicStrategy(Player):
     def makeWager(self):
@@ -402,7 +421,8 @@ class Table():
             pid='player'+str(i)
             pid='*'+pid+'*'
             #self.players.append(Stays(pid))
-            self.players.append(BasicStrategy(pid))
+            #self.players.append(BasicStrategy(pid))
+            self.players.append(VariesBet(pid))
     def makeWagers(self):
         for p in self.players:
             if(p.bankroll<=0):
